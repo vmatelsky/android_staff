@@ -1,1 +1,1 @@
-include ':sqliteWithLoader', ":progressWidget"
+include ':sqliteWithLoader', ":progressWidget", ":uiGames"

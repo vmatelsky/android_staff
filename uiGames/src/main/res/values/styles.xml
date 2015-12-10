@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light">
+
+        <item name="android:windowBackground">@drawable/splash</item>
+
+        <item name="colorPrimary">@color/muted</item>
+        <item name="colorPrimaryDark">@color/muted_dark</item>
+        <item name="colorAccent">@color/vibrant_dark</item>
+
+    </style>
+
+    <style name="UIGamesTheme" parent="Theme.AppCompat.Light">
+
+        <item name="android:windowBackground">@color/muted</item>
+
+        <item name="colorPrimary">@color/muted</item>
+        <item name="colorPrimaryDark">@color/muted_dark</item>
+        <item name="colorAccent">@color/vibrant_light</item>
+        <item name="colorControlHighlight">@color/vibrant_light</item>
+
+        <item name="toolbarStyle">@style/Widget.UIGames.Toolbar</item>
+    </style>
+
+    <style name="Widget.UIGames.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="theme">@style/ThemeOverlay.UIGames.ActionBar</item>
+    </style>
+
+    <style name="ThemeOverlay.UIGames.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+
+        <item name="android:textColorPrimary">?attr/colorAccent</item>
+        <item name="android:actionBarItemBackground">@drawable/selection_drawable</item>
+        <item name="colorControlNormal">?attr/colorAccent</item>
+        <item name="android:actionMenuTextColor">?attr/colorAccent</item>
+    </style>
+
+</resources>

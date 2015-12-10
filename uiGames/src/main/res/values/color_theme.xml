@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="vibrant" type="color">#AD6B6B</item>
+    <item name="vibrant_dark" type="color">#D46A6A</item>
+    <item name="vibrant_light" type="color">#FFAAAA</item>
+
+    <item name="muted" type="color">#AA3939</item>
+    <item name="muted_dark" type="color">#550000</item>
+    <item name="muted_light" type="color">#801515</item>
+
+    <item name="border_color" type="color">#FFD1AA</item>
+
+</resources>
