@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WearMaster</string>
+    <string name="send_direct">Send direct</string>
+    <string name="send_broadcast">Send broadcast</string>
+</resources>
