@@ -1,1 +1,1 @@
-include ':sqliteWithLoader', ":progressWidget", ":uiGames", ":kioskMode", ":bouncingCarousel", ':wearslave', ':wearmaster'
+include ':sqliteWithLoader', ':wearcontract', ":progressWidget", ":uiGames", ":kioskMode", ":bouncingCarousel", ':wearslave', ':wearmaster'

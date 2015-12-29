@@ -52,4 +52,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:8.3.0'
 
     provided 'com.google.android.wearable:wearable:1.+'
+
+    compile project(':wearcontract')
 }
