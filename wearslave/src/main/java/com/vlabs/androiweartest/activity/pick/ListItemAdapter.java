@@ -1,0 +1,52 @@
+package com.vlabs.androiweartest.activity.pick;
+
+import android.app.Activity;
+import android.support.wearable.view.WearableListView;
+import android.view.ViewGroup;
+
+import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListItemAdapter extends WearableListView.Adapter implements ClickableAdapter {
+    private List<ListItemEntity> mItems = new ArrayList<ListItemEntity>();
+
+    public ListItemAdapter() {
+        this(new ArrayList<ListItemEntity>());
+    }
+
+    public ListItemAdapter(final List<ListItemEntity> items) {
+        mItems = items;
+    }
+
+    @Override
+    public String toString() {
+        return "(ListItemAdapter " + mItems + ")";
+    }
+
+    @Override
+    public WearableListView.ViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int itemType) {
+        return ListItemView.getViewHolderFromType(itemType);
+    }
+
+    @Override
+    public void onBindViewHolder(final WearableListView.ViewHolder viewHolder, final int index) {
+        mItems.get(index).bindViewHolder(viewHolder);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mItems.size();
+    }
+
+    @Override
+    public int getItemViewType(final int index) {
+        return mItems.get(index).getListItemView().getViewType();
+    }
+
+    @Override
+    public void handleClick(final Activity activity, final int index) {
+        mItems.get(index).onClick(activity);
+    }
+}

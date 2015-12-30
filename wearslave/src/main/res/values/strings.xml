@@ -4,4 +4,16 @@
     <string name="hello">Hello World!</string>
     <string name="title">Hello Notification!</string>
     <string name="notification_posted">Notification posted</string>
+    <string name="for_you_title">For You</string>
+    <string name="search_title">Voice Search</string>
+    <string name="my_stations_title">My Stations</string>
+    <string name="connect_to_perform_action">Please connect to your paired device to perform that action.</string>
+    <string name="no_stations_for_you">You don\\\'t have any For You stations. Access iHeartRadio on your phone to get Recommendations just for you. </string>
+    <string name="no_stations_my_stations">All your favorite and recent stations will be right here. To add a favorite station, open the app on your paired device. </string>
+    <string name="favorite_stations_title">Favorite Stations</string>
+    <string name="recent_stations_title">Recent Stations</string>
+    <string name="not_all_favorites_showing_message">Looking for another station? Open the app on your paired device.</string>
+    <string name="show_more">Looking for a new station? Open the app on your paired device.</string>
+    <string name="wear_loading">Loading...</string>
+    <string name="recently_played_title">Recently Played</string>
 </resources>

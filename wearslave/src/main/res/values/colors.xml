@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_grey">#2F2F2F</color>
+    <color name="semi_transparent_bg">#80000000</color>
+    <color name="notification_background">#000000</color>
+    <color name="station_list_text_color">#FFFFFF</color>
+    <color name="controls_white_background_disabled">#66ffffff</color>
+    <color name="controls_white_background_enabled">#d8ffffff</color>
+</resources>

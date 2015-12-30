@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">WearMaster</string>
-    <string name="send_direct">Send direct</string>
-    <string name="send_broadcast">Send broadcast</string>
+    <string name="shuffle_for_you">Shuffle for you stations</string>
+    <string name="shuffle_my_stations">Shuffle my stations</string>
 </resources>

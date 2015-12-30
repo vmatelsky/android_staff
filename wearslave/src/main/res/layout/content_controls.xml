@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/control_container_controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/content_padding">
+        <ImageButton
+            android:id="@+id/control_vol_up"
+            style="@style/ControlButton"
+            android:layout_gravity="top|center"
+            android:src="@drawable/ic_controls_volume_up"
+            android:tag="vol-up" />
+
+        <ImageButton
+            android:id="@+id/control_vol_down"
+            style="@style/ControlButton"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_controls_volume_down"
+            android:tag="vol-down" />
+
+        <ImageButton
+            android:id="@+id/control_thumb_down"
+            style="@style/ControlButton"
+            android:layout_gravity="center_vertical|left"
+            android:src="@drawable/ic_controls_thumbsdown"
+            android:tag="thumb-down" />
+
+        <ImageButton
+            android:id="@+id/control_thumb_up"
+            style="@style/ControlButton"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/ic_controls_thumbsup"
+            android:tag="thumb-up" />
+    </FrameLayout>
+
+    <!--<include-->
+        <!--android:id="@+id/control_container_station"-->
+        <!--layout="@layout/shared_play_station" />-->
+
+</FrameLayout>

@@ -11,18 +11,18 @@
     tools:context="com.vlabs.wearmaster.MainActivity">
 
     <Button
-        android:id="@+id/send_broadcast"
+        android:id="@+id/shuffle_my_stations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send_broadcast"
+        android:text="@string/shuffle_my_stations"
         android:layout_centerInParent="true"/>
 
     <Button
-        android:id="@+id/send_direct"
+        android:id="@+id/shuffle_for_you"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/send_broadcast"
-        android:text="@string/send_direct"
+        android:layout_below="@id/shuffle_my_stations"
+        android:text="@string/shuffle_for_you"
         android:layout_centerInParent="true"/>
 
     <TextView
