@@ -1,11 +1,12 @@
 package com.vlabs.androiweartest.helpers.analytics;
 
 import com.google.android.gms.wearable.DataMap;
+import com.vlabs.androiweartest.helpers.DataMapBuilder;
 
 public class WearAnalyticsConstants {
     private static final int NONE = -1;
 
-    public static enum WearPlayedFrom {
+    public enum WearPlayedFrom {
         PLAY,
         FOR_YOU,
         MY_STATIONS_FAVORITE,
@@ -23,8 +24,8 @@ public class WearAnalyticsConstants {
             }
         }
 
-//        public void putValues(DataMapBuilder dataMapBuilder) {
-//            dataMapBuilder.putInt(KEY, ordinal());
-//        }
+        public void putValues(DataMapBuilder dataMapBuilder) {
+            dataMapBuilder.putInt(KEY, ordinal());
+        }
     }
 }

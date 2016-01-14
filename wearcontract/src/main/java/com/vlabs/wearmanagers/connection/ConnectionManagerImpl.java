@@ -3,7 +3,6 @@ package com.vlabs.wearmanagers.connection;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -109,10 +108,9 @@ public class ConnectionManagerImpl implements
             @Override
             protected Bitmap doInBackground(Asset... params) {
                 ConnectionResult connectionResult = mGoogleApiClient.blockingConnect(ASSET_TIMEOUT, TimeUnit.SECONDS);
-                Log.d(TAG, " reading asset, connected status: " + connectionResult);
+
                 if (!connectionResult.isSuccess()) return null;
                 InputStream inputStream = Wearable.DataApi.getFdForAsset(mGoogleApiClient, asset).await().getInputStream();
-                Log.d(TAG, " got stream: " + inputStream + " for asset: " + asset);
                 if (inputStream == null) {
                     return null;
                 }

@@ -1,27 +1,35 @@
 package com.vlabs.androiweartest.models;
 
+import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.Receiver;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subjects.PublishSubject;
+
 public class StationListModel {
 
     private final String mPath;
     private final MessageManager mMessageManager;
-    private final List<Receiver<List<WearStation>>> mStationsChangedReceivers = new ArrayList<>();
-    private Receiver<MessageManager.Message> mOnStationListChanged = new Receiver<MessageManager.Message>() {
+    private final PublishSubject<List<WearStation>> mOnStationsChanged = PublishSubject.create();
+
+    private Action1<DataEvent> mOnStationListChanged = new Action1<DataEvent>() {
         @Override
-        public void receive(final MessageManager.Message message) {
-            onStationsChanged(processDataMap(message.dataMap()));
+        public void call(final DataEvent dataEvent) {
+            final DataMap dataMap = DataMap.fromByteArray(dataEvent.getDataItem().getData());
+            onStationsChanged(processDataMap(dataMap));
         }
     };
+    private Subscription mCurrentSubscription;
 
     private List<WearStation> processDataMap(final DataMap dataMap) {
         if (dataMap == null) return new ArrayList<>();
@@ -46,32 +54,29 @@ public class StationListModel {
     }
 
     public void startListening() {
-        mMessageManager.subscribeOnData(mPath, mOnStationListChanged);
+        mCurrentSubscription = mMessageManager.onDataByPath(mPath).subscribe(mOnStationListChanged);
     }
 
     public void stopListening() {
-        mMessageManager.unsubscribeOnData(mPath, mOnStationListChanged);
-    }
-
-    public void addOnStationsChangedListener(Receiver<List<WearStation>> receiver) {
-        mStationsChangedReceivers.add(receiver);
-    }
-
-    public void removeOnStationsChangedListener(Receiver<List<WearStation>> receiver) {
-        mStationsChangedReceivers.remove(receiver);
-    }
-
-    private void onStationsChanged(List<WearStation> stations) {
-        for (Receiver<List<WearStation>> receiver : mStationsChangedReceivers) {
-            receiver.receive(stations);
+        if (mCurrentSubscription != null) {
+            mCurrentSubscription.unsubscribe();
+            mCurrentSubscription = null;
         }
     }
 
-    public void getData(final Receiver<List<WearStation>> receiver) {
+    public Observable<List<WearStation>> onStationsChanged() {
+        return mOnStationsChanged;
+    }
+
+    private void onStationsChanged(List<WearStation> stations) {
+        mOnStationsChanged.onNext(stations);
+    }
+
+    public void getData(final Action1<List<WearStation>> receiver) {
         WearApplication.instance().connectionManager().getDataItems(mPath, new ConnectionManager.DataListener() {
             @Override
             public void onData(final String path, final DataMap map) {
-                receiver.receive(processDataMap(map));
+                receiver.call(processDataMap(map));
             }
         });
     }

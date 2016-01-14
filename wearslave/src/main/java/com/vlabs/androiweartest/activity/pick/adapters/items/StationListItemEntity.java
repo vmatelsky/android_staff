@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.clearchannel.iheartradio.controller.view.StationListViewItem;
 import com.vlabs.androiweartest.R;
+import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
 import com.vlabs.androiweartest.activity.pick.ListItemEntity;
 import com.vlabs.androiweartest.activity.pick.ListItemView;
@@ -22,7 +23,7 @@ public class StationListItemEntity implements ListItemEntity {
 
     @Override
     public String toString() {
-        return "(" + mWearStation.name() + " " + mPlayedFrom;
+        return "(" + mWearStation.name() + " " + mPlayedFrom + ")";
     }
 
     @Override
@@ -34,8 +35,7 @@ public class StationListItemEntity implements ListItemEntity {
     public void onClick(Activity activity) {
         Toast.makeText(activity, R.string.wear_loading, Toast.LENGTH_LONG).show();
         activity.finish();
-        // TODO: add implementation
-//        WearApplication.instance().playerManager().playStation(mWearStation, mPlayedFrom);
+        WearApplication.instance().playerManager().playStation(mWearStation, mPlayedFrom);
     }
 
     @Override

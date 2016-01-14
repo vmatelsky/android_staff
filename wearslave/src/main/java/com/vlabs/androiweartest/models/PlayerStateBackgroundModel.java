@@ -8,30 +8,21 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.managers.ImageLoader;
+import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearmanagers.Receiver;
 
-import java.util.ArrayList;
-import java.util.List;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.subjects.PublishSubject;
 
-public class PlayerStateBackgroundModel {
+public class PlayerStateBackgroundModel implements Action1<WearPlayerState> {
 
     private final Context mContext;
     private final PlayerStateModel mSlaveModel;
     private final ImageLoader mImageLoader;
-    private final List<Receiver<Drawable>> mBackgroundChangedListeners = new ArrayList<>();
 
-    private final Receiver<WearPlayerState> mPlayerStateChangeListener = new Receiver<WearPlayerState>() {
-        @Override
-        public void receive(final WearPlayerState state) {
-            if (state.isPlaying()) {
-                loadBackgroundImagePath(state.getImagePath());
-            } else {
-                loadBackgroundFromRecentStations();
-            }
-        }
-    };
+    private PublishSubject<Drawable> mBackgroundChangedListeners = PublishSubject.create();
 
     private final Receiver<Bitmap> mBackgroundReceiver = new Receiver<Bitmap>() {
         @Override
@@ -47,21 +38,15 @@ public class PlayerStateBackgroundModel {
         mContext = context;
         mSlaveModel = model;
         mImageLoader = imageLoader;
-        mSlaveModel.addPlayerStateChangeListener(mPlayerStateChangeListener);
+        mSlaveModel.onPlayerStateChanged().subscribe(this);
     }
 
-    public void addOnBackgroundChangedListener(Receiver<Drawable> receiver) {
-        mBackgroundChangedListeners.add(receiver);
-    }
-
-    public void removeOnBackgroundChangedListener(Receiver<Drawable> receiver) {
-        mBackgroundChangedListeners.remove(receiver);
+    public Observable<Drawable> onBackgroundChangedListener() {
+        return mBackgroundChangedListeners;
     }
 
     private void invokeOnBackgroundChanged(Drawable drawable) {
-        for (Receiver<Drawable> receiver : mBackgroundChangedListeners) {
-            receiver.receive(drawable);
-        }
+        mBackgroundChangedListeners.onNext(drawable);
     }
 
     private void loadBackgroundImagePath(final String imagePath) {
@@ -76,5 +61,14 @@ public class PlayerStateBackgroundModel {
     private void setDefaultBackgroundColor() {
         final int color = ContextCompat.getColor(mContext, R.color.notification_background);
         invokeOnBackgroundChanged(new ColorDrawable(color));
+    }
+
+    @Override
+    public void call(final WearPlayerState state) {
+        if (state.isPlaying()) {
+            loadBackgroundImagePath(state.getImagePath());
+        } else {
+            loadBackgroundFromRecentStations();
+        }
     }
 }

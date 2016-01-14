@@ -6,15 +6,11 @@ import android.view.ViewGroup;
 
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListItemAdapter extends WearableListView.Adapter implements ClickableAdapter {
-    private List<ListItemEntity> mItems = new ArrayList<ListItemEntity>();
 
-    public ListItemAdapter() {
-        this(new ArrayList<ListItemEntity>());
-    }
+    private final List<ListItemEntity> mItems;
 
     public ListItemAdapter(final List<ListItemEntity> items) {
         mItems = items;

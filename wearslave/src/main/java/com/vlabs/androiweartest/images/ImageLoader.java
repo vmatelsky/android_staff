@@ -1,4 +1,4 @@
-package com.vlabs.androiweartest.managers;
+package com.vlabs.androiweartest.images;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,46 +11,30 @@ import com.vlabs.wearcontract.Message;
 import com.vlabs.wearmanagers.Receiver;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
 
-import java.util.HashMap;
-
-
 public class ImageLoader {
-
-    private final HashMap<String, Asset> mAssetCache = new HashMap<>();
 
     private final int mWindowHeight;
     private final int mWindowWidth;
 
     public ImageLoader() {
-
-        Resources res = WearApplication.instance().getResources();
+        final Resources res = WearApplication.instance().getResources();
         mWindowHeight = res.getDisplayMetrics().heightPixels;
         mWindowWidth = res.getDisplayMetrics().widthPixels;
     }
 
     public void imageByPath(final String imagePath, final Receiver<Bitmap> receiver) {
-        if (mAssetCache.containsKey(imagePath)) {
-            final Asset asset = mAssetCache.get(imagePath);
-            resolveBitmap(imagePath, asset, receiver);
-            return;
-        }
-
-        final ConnectionManager.DataListener listener = new ConnectionManager.DataListener() {
+        WearApplication.instance().connectionManager().getDataItems(imagePath, new ConnectionManager.DataListener() {
             @Override
             public void onData(final String path, final DataMap map) {
                 final Asset asset = assetFromMap(map);
 
                 if (asset == null) {
                     requestImageToBeLoaded(path);
-                }
-                else {
+                } else {
                     resolveBitmap(path, asset, receiver);
-                    mAssetCache.put(path, asset);
                 }
             }
-        };
-
-        WearApplication.instance().connectionManager().getDataItems(imagePath, listener);
+        });
     }
 
     private void requestImageToBeLoaded(final String path) {

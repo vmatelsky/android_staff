@@ -10,19 +10,22 @@ import android.widget.TextView;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
-import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.androiweartest.activity.pick.adapters.AdapterFactory;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
+import com.vlabs.androiweartest.helpers.analytics.Analytics;
+import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.Receiver;
 
 import java.util.List;
 
-public class PickStationActivity extends Activity implements Receiver<List<WearStation>> {
+import rx.Subscription;
+import rx.functions.Action1;
+
+public class PickStationActivity extends Activity implements Action1<List<WearStation>> {
+
 
     private enum ListType {
         FOR_YOU,
@@ -42,6 +45,7 @@ public class PickStationActivity extends Activity implements Receiver<List<WearS
     private WearableListView.Adapter mAdapter;
     private AdapterFactory mAdapterFactory;
     private StationListModel mModel;
+    private Subscription mOnStationChangedSubscription;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -56,8 +60,6 @@ public class PickStationActivity extends Activity implements Receiver<List<WearS
         mModel = new StationListModel(WearApplication.instance().messageManager(), stationsListPath());
         mModel.getData(this);
 
-        // TODO: receive last stations of that type there
-
         mAdapterFactory = new AdapterFactory(this);
         mStationList.setClickListener(onItemClickedListener);
 
@@ -70,18 +72,18 @@ public class PickStationActivity extends Activity implements Receiver<List<WearS
     protected void onStart() {
         super.onStart();
         mModel.startListening();
-        mModel.addOnStationsChangedListener(this);
+        mOnStationChangedSubscription = mModel.onStationsChanged().subscribe(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mModel.stopListening();
-        mModel.removeOnStationsChangedListener(this);
+        mOnStationChangedSubscription.unsubscribe();
     }
 
     @Override
-    public void receive(final List<WearStation> wearStations) {
+    public void call(final List<WearStation> wearStations) {
         if (isFinishing()) return;
 
         if (wearStations.isEmpty()) {

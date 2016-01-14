@@ -2,4 +2,5 @@
     <string name="app_name">WearMaster</string>
     <string name="shuffle_for_you">Shuffle for you stations</string>
     <string name="shuffle_my_stations">Shuffle my stations</string>
+    <string name="send_image">Send image</string>
 </resources>
