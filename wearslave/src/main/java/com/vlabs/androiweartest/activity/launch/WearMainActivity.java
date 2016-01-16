@@ -12,6 +12,8 @@ import com.vlabs.androiweartest.helpers.behavior.FillWithImageFromRemoteBehavior
 
 public class WearMainActivity extends Activity {
 
+    public static final int REQUEST_PICK = 1;
+
     private FillWithImageFromRemoteBehavior mBehavior;
 
     @Override

@@ -16,4 +16,6 @@
     <string name="show_more">Looking for a new station? Open the app on your paired device.</string>
     <string name="wear_loading">Loading...</string>
     <string name="recently_played_title">Recently Played</string>
+    <string name="search_no_result">Not able to recognize. Try again?</string>
+    <string name="search_result_title">Search Result</string>
 </resources>

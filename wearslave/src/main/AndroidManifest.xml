@@ -11,6 +11,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
+
+        <uses-library android:name="com.google.android.wearable" android:required="false" />
+
         <activity
             android:name=".activity.launch.WearMainActivity"
             android:allowEmbedded="true"
@@ -35,6 +38,22 @@
 
         <activity
             android:name=".activity.notification.NotificationActivity"
+            android:allowEmbedded="true"
+            android:exported="true"
+            android:label="MyStubBroadcastActivity"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault.Light" />
+
+        <activity
+            android:name=".activity.search.SearchActivity"
+            android:allowEmbedded="true"
+            android:exported="true"
+            android:label="MyStubBroadcastActivity"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.DeviceDefault.Light" />
+
+        <activity
+            android:name=".activity.search.PlayStationActivity"
             android:allowEmbedded="true"
             android:exported="true"
             android:label="MyStubBroadcastActivity"

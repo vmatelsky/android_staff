@@ -11,11 +11,11 @@ import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
 import com.vlabs.wearcontract.Data;
 
 public class MyStationsFragment extends Fragment {
-    private static final int REQUEST_PICK = 1;
 
     public static MyStationsFragment newInstance() {
         return new MyStationsFragment();
@@ -52,7 +52,7 @@ public class MyStationsFragment extends Fragment {
     }
 
     private void launchPickStation(Intent intent) {
-        startActivityForResult(intent, REQUEST_PICK);
+        startActivityForResult(intent, WearMainActivity.REQUEST_PICK);
     }
 
     private Intent createPickStationIntent() {

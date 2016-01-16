@@ -1,8 +1,11 @@
 package com.vlabs.androiweartest.models;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
@@ -25,10 +28,14 @@ public class StationListModel {
     private Action1<DataEvent> mOnStationListChanged = new Action1<DataEvent>() {
         @Override
         public void call(final DataEvent dataEvent) {
-            final DataMap dataMap = DataMap.fromByteArray(dataEvent.getDataItem().getData());
-            onStationsChanged(processDataMap(dataMap));
+            if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
+                final DataMap dataMap = DataMap.fromByteArray(dataEvent.getDataItem().getData());
+                onStationsChanged(processDataMap(dataMap));
+            } else if (dataEvent.getType() == DataEvent.TYPE_DELETED) {
+            }
         }
     };
+
     private Subscription mCurrentSubscription;
 
     private List<WearStation> processDataMap(final DataMap dataMap) {
@@ -46,7 +53,6 @@ public class StationListModel {
 
         return stations;
     }
-
 
     public StationListModel(final MessageManager messageManager, final String path) {
         mPath = path;
@@ -72,11 +78,27 @@ public class StationListModel {
         mOnStationsChanged.onNext(stations);
     }
 
-    public void getData(final Action1<List<WearStation>> receiver) {
+    public WearAnalyticsConstants.WearPlayedFrom getWearPlayedFrom(final WearStation wearStation) {
+        if (TextUtils.isEmpty(mPath)) return null;
+
+        if (Data.PATH_STATIONS_FOR_YOU.equals(mPath)) {
+            return WearAnalyticsConstants.WearPlayedFrom.FOR_YOU;
+        } else if (Data.PATH_STATIONS_MY_STATIONS.equals(mPath)) {
+            if (wearStation.isFavorite()) {
+                return WearAnalyticsConstants.WearPlayedFrom.MY_STATIONS_FAVORITE;
+            } else {
+                return WearAnalyticsConstants.WearPlayedFrom.MY_STATIONS_RECENT;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public void refresh() {
         WearApplication.instance().connectionManager().getDataItems(mPath, new ConnectionManager.DataListener() {
             @Override
             public void onData(final String path, final DataMap map) {
-                receiver.call(processDataMap(map));
+                onStationsChanged(processDataMap(map));
             }
         });
     }

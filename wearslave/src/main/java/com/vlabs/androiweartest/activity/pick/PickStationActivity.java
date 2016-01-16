@@ -21,11 +21,9 @@ import com.vlabs.wearcontract.WearStation;
 
 import java.util.List;
 
-import rx.Subscription;
 import rx.functions.Action1;
 
 public class PickStationActivity extends Activity implements Action1<List<WearStation>> {
-
 
     private enum ListType {
         FOR_YOU,
@@ -45,7 +43,6 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
     private WearableListView.Adapter mAdapter;
     private AdapterFactory mAdapterFactory;
     private StationListModel mModel;
-    private Subscription mOnStationChangedSubscription;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -58,7 +55,7 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
 
         mAnalytics = WearApplication.instance().analytics();
         mModel = new StationListModel(WearApplication.instance().messageManager(), stationsListPath());
-        mModel.getData(this);
+        mModel.onStationsChanged().subscribe(this);
 
         mAdapterFactory = new AdapterFactory(this);
         mStationList.setClickListener(onItemClickedListener);
@@ -72,14 +69,13 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
     protected void onStart() {
         super.onStart();
         mModel.startListening();
-        mOnStationChangedSubscription = mModel.onStationsChanged().subscribe(this);
+        mModel.refresh();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mModel.stopListening();
-        mOnStationChangedSubscription.unsubscribe();
     }
 
     @Override
@@ -116,7 +112,7 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
 
         @Override
         public void onTopEmptyRegionClick() {
-            finish();
+            finishAffinity();
         }
     };
 

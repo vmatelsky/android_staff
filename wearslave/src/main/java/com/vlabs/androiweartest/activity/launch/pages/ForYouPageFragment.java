@@ -12,11 +12,11 @@ import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
 import com.vlabs.wearcontract.Data;
 
 public class ForYouPageFragment extends Fragment {
-    private static final int REQUEST_PICK = 1;
 
     public ForYouPageFragment() {}
 
@@ -40,7 +40,7 @@ public class ForYouPageFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (isAdded() && requestCode == REQUEST_PICK && resultCode == Activity.RESULT_OK) {
+        if (isAdded() && requestCode == WearMainActivity.REQUEST_PICK && resultCode == Activity.RESULT_OK) {
             getActivity().finish();
         }
     }
@@ -58,7 +58,7 @@ public class ForYouPageFragment extends Fragment {
     }
 
     private void launchPickStation(Intent intent) {
-        startActivityForResult(intent, REQUEST_PICK);
+        startActivityForResult(intent, WearMainActivity.REQUEST_PICK);
     }
 
     private Intent createPickStationIntent() {

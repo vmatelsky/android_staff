@@ -20,4 +20,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/background_controls_circle_selector</item>
     </style>
+
+    <style name="ContentLightBold" parent="LightText">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

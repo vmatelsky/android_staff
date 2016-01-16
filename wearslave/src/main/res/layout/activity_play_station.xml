@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/background_grey">
+
+    <ImageView
+        android:id="@+id/station_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.wearable.view.BoxInsetLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@drawable/background_content"
+            android:orientation="vertical"
+            app:layout_box="all">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/ContentLightBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recently Played" />
+
+            <TextView
+                android:id="@+id/station_name_button"
+                style="@style/ContentLight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_blackcard_play"
+                android:gravity="center_vertical"
+                android:maxLines="2" />
+
+        </LinearLayout>
+    </android.support.wearable.view.BoxInsetLayout>
+
+</FrameLayout>
