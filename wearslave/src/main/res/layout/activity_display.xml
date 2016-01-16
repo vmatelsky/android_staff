@@ -6,7 +6,7 @@
              android:layout_height="match_parent"
              android:background="@color/background_grey">
 
-    <ImageView
+    <com.clearchannel.iheartradio.controller.view.ImageByDataPathView
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

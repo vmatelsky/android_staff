@@ -84,7 +84,7 @@ public class SearchPageFragment extends Fragment{
     private void searchFor(final String term) {
         final Intent intent = new Intent(getActivity(), SearchActivity.class);
         intent.putExtra(WearExtras.EXTRA_QUERY, term);
-        getActivity().startActivity(intent);
+        startActivity(intent);
     }
 
     private void showNoConnectionMsg() {

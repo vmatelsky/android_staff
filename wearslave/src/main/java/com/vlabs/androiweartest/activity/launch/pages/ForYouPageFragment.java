@@ -1,6 +1,5 @@
 package com.vlabs.androiweartest.activity.launch.pages;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
-import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
 import com.vlabs.wearcontract.Data;
 
@@ -37,14 +35,6 @@ public class ForYouPageFragment extends Fragment {
         iconView.setOnClickListener(v -> onIconViewPressed());
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (isAdded() && requestCode == WearMainActivity.REQUEST_PICK && resultCode == Activity.RESULT_OK) {
-            getActivity().finish();
-        }
-    }
-
     protected void onIconViewPressed() {
         if (WearApplication.instance().connectionManager().isConnected()) {
             launchStationList();
@@ -54,15 +44,11 @@ public class ForYouPageFragment extends Fragment {
     }
 
     protected void launchStationList() {
-        launchPickStation(createPickStationIntent());
-    }
-
-    private void launchPickStation(Intent intent) {
-        startActivityForResult(intent, WearMainActivity.REQUEST_PICK);
+        startActivity(createPickStationIntent());
     }
 
     private Intent createPickStationIntent() {
-        return PickStationActivity.createLaunchIntent(getActivity(), Data.PATH_STATIONS_FOR_YOU, getString(R.string.no_stations_for_you));
+        return PickStationActivity.createIntent(getActivity(), Data.PATH_STATIONS_FOR_YOU, getString(R.string.no_stations_for_you));
     }
 
     private void showNoConnectionMsg() {

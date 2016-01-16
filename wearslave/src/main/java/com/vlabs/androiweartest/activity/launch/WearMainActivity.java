@@ -4,17 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
-import android.widget.ImageView;
 
+import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.helpers.behavior.FillWithImageFromRemoteBehavior;
-
 
 public class WearMainActivity extends Activity {
-
-    public static final int REQUEST_PICK = 1;
-
-    private FillWithImageFromRemoteBehavior mBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +22,7 @@ public class WearMainActivity extends Activity {
         DotsPageIndicator dotsIndicator = (DotsPageIndicator)findViewById(R.id.page_indicator);
         dotsIndicator.setPager(pager);
 
-
-        final ImageView background = (ImageView) findViewById(R.id.background);
-        mBehavior = new FillWithImageFromRemoteBehavior(background, "/image1234");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mBehavior.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mBehavior.stopListening();
+        final ImageByDataPathView background = (ImageByDataPathView) findViewById(R.id.background);
+        background.setImagePath("/image1234");
     }
 }

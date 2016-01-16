@@ -6,9 +6,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.wearable.activity.WearableActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.models.StationListModel;
@@ -27,7 +27,7 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
 
     private WearStation mStation;
     private TextView mStationButton;
-    private ImageView mStationBackground;
+    private ImageByDataPathView mStationBackground;
 
     private final View.OnClickListener onPlayStationListener = new View.OnClickListener() {
         @Override
@@ -54,7 +54,7 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
         mStationListModel = new StationListModel(messageManager, path);
 
         mStationButton = (TextView) findViewById(R.id.station_name_button);
-        mStationBackground = (ImageView) findViewById(R.id.station_background);
+        mStationBackground = (ImageByDataPathView) findViewById(R.id.station_background);
         final TextView title = (TextView) findViewById(R.id.title);
         title.setText(titleText);
 
@@ -124,9 +124,8 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
             mStationBackground.setImageBitmap(null);
             mStation = null;
         } else {
-            // TODO: set image according to image path
-            mStationBackground.setImageResource(R.drawable.background_image_default_25);
             mStation = wearStations.get(0);
+            mStationBackground.setImagePath(mStation.getImagePath());
         }
         updateStationUi();
     }

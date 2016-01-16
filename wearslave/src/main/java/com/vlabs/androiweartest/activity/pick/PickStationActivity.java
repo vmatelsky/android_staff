@@ -30,7 +30,7 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
         MY_STATIONS,
     }
 
-    public static Intent createLaunchIntent(final Activity activity, final String extraStationPath, final String extraNoStationsMessage) {
+    public static Intent createIntent(final Activity activity, final String extraStationPath, final String extraNoStationsMessage) {
         final Intent intent = new Intent(activity, PickStationActivity.class);
         intent.putExtra(WearExtras.EXTRA_STATION_LIST_PATH, extraStationPath);
         intent.putExtra(WearExtras.EXTRA_NO_STATIONS_MESSAGE, extraNoStationsMessage);
@@ -105,7 +105,6 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
         @Override
         public void onClick(final WearableListView.ViewHolder viewHolder) {
             if (mAdapter instanceof ClickableAdapter) {
-                setResult(Activity.RESULT_OK);
                 ((ClickableAdapter) mAdapter).handleClick(PickStationActivity.this, viewHolder.getPosition());
             }
         }

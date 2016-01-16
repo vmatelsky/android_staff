@@ -33,9 +33,9 @@ public class StationListItemEntity implements ListItemEntity {
 
     @Override
     public void onClick(Activity activity) {
-        Toast.makeText(activity, R.string.wear_loading, Toast.LENGTH_LONG).show();
-        activity.finish();
+        Toast.makeText(activity.getApplicationContext(), R.string.wear_loading, Toast.LENGTH_LONG).show();
         WearApplication.instance().playerManager().playStation(mWearStation, mPlayedFrom);
+        activity.finishAffinity();
     }
 
     @Override
