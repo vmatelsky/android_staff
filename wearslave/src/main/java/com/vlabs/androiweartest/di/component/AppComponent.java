@@ -9,19 +9,21 @@ import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
+import de.greenrobot.event.EventBus;
 
 @Singleton
 @Component(modules = {ApplicationModule.class})
 public interface AppComponent {
 
     Context appContext();
+
+    EventBus eventBus();
 
     MessageManager messageManager();
 

@@ -1,6 +1,5 @@
 package com.clearchannel.iheartradio.controller.view;
 
-import android.app.Activity;
 import android.support.wearable.view.WearableListView;
 
 import com.vlabs.androiweartest.activity.BaseActivity;

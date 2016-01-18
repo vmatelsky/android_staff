@@ -6,9 +6,10 @@ import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.events.data.EventType;
+import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
@@ -21,9 +22,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
+import de.greenrobot.event.EventBus;
 
-public class SearchActivity extends BaseActivity implements Action1<List<WearStation>> {
+public class SearchActivity extends BaseActivity {
 
     @Inject
     Analytics mAnalytics;
@@ -34,8 +35,8 @@ public class SearchActivity extends BaseActivity implements Action1<List<WearSta
     @Inject
     MessageManager mMessageManager;
 
-
-    private StationListModel mModel;
+    @Inject
+    EventBus mEventBus;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -48,11 +49,8 @@ public class SearchActivity extends BaseActivity implements Action1<List<WearSta
         }
 
         setContentView(R.layout.activity_search);
-
         getComponent().inject(this);
 
-        mModel = new StationListModel(mMessageManager, mConnectionManager, Data.PATH_STATIONS_SEARCH);
-        mModel.onStationsChanged().subscribe(this);
         searchFor(getIntent().getStringExtra(WearExtras.EXTRA_QUERY));
 
         if (savedInstanceState == null) {
@@ -63,13 +61,13 @@ public class SearchActivity extends BaseActivity implements Action1<List<WearSta
     @Override
     protected void onStart() {
         super.onStart();
-        mModel.startListening();
+        mEventBus.register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mModel.stopListening();
+        mEventBus.unregister(this);
     }
 
     public void showToast(final String message) {
@@ -90,18 +88,28 @@ public class SearchActivity extends BaseActivity implements Action1<List<WearSta
         mAnalytics.broadcastRemoteControl(WearAnalyticsConstants.WearBrowse.VOICE_SEARCH_SYSTEM);
     }
 
-    @Override
-    public void call(final List<WearStation> wearStations) {
-        if (wearStations.isEmpty()) {
-            showToast(getString(R.string.search_no_result));
-            finish();
-            return;
-        }
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnStations event) {
+        if (isFinishing()) return;
 
-        final Intent intent = new Intent(SearchActivity.this, PlayStationActivity.class);
-        intent.putExtra(WearExtras.EXTRA_STATION_LIST_PATH, Data.PATH_STATIONS_SEARCH);
-        intent.putExtra(WearExtras.EXTRA_TITLE, getString(R.string.search_result_title));
-        startActivity(intent);
-        finish();
+        if (event.path().equals(Data.PATH_STATIONS_SEARCH)) {
+
+            if (event.eventType() != EventType.CHANGED) {
+                return;
+            }
+
+            final List<WearStation> wearStations = event.stations();
+            if (wearStations == null || wearStations.isEmpty()) {
+                showToast(getString(R.string.search_no_result));
+                finish();
+                return;
+            }
+
+            final Intent intent = new Intent(SearchActivity.this, PlayStationActivity.class);
+            intent.putExtra(WearExtras.EXTRA_STATION_LIST_PATH, Data.PATH_STATIONS_SEARCH);
+            intent.putExtra(WearExtras.EXTRA_TITLE, getString(R.string.search_result_title));
+            startActivity(intent);
+            finish();
+        }
     }
 }

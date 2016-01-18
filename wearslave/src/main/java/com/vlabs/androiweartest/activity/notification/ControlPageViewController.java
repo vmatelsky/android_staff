@@ -7,13 +7,12 @@ import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.androiweartest.models.PlayerStateModel;
-import com.vlabs.androiweartest.models.StationListModel;
 
 public class ControlPageViewController {
     protected PlayerManager mPlayerManager;
     protected Analytics mAnalytics;
-    protected StationListModel mStationListModel;
-    protected PlayerStateModel mPlayerStateModel;
+//    protected StationListModel mStationListModel;
+//    protected PlayerStateModel mPlayerStateModel;
 
     private ImageButton mVolumeDownButton;
     private ImageButton mVolUpButton;

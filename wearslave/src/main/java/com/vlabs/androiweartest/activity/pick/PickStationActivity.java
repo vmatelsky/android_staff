@@ -12,8 +12,8 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.adapters.AdapterFactory;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
+import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
+import de.greenrobot.event.EventBus;
 
-public class PickStationActivity extends BaseActivity implements Action1<List<WearStation>> {
+public class PickStationActivity extends BaseActivity {
 
     private enum ListType {
         FOR_YOU,
@@ -50,11 +50,13 @@ public class PickStationActivity extends BaseActivity implements Action1<List<We
     @Inject
     ConnectionManager mConnectionManager;
 
+    @Inject
+    EventBus mEventBus;
+
     private WearableListView mStationList;
     private TextView mEmptyMessageView;
     private WearableListView.Adapter mAdapter;
     private AdapterFactory mAdapterFactory;
-    private StationListModel mModel;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -67,9 +69,6 @@ public class PickStationActivity extends BaseActivity implements Action1<List<We
         mStationList = (WearableListView) findViewById(R.id.station_list);
         mEmptyMessageView = (TextView) findViewById(R.id.empty_message);
 
-        mModel = new StationListModel(mMessageManager, mConnectionManager, stationsListPath());
-        mModel.onStationsChanged().subscribe(this);
-
         mAdapterFactory = new AdapterFactory(this);
         mStationList.setClickListener(onItemClickedListener);
 
@@ -81,37 +80,14 @@ public class PickStationActivity extends BaseActivity implements Action1<List<We
     @Override
     protected void onStart() {
         super.onStart();
-        mModel.startListening();
-        mModel.refresh();
+        mEventBus.register(this);
+        refresh();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mModel.stopListening();
-    }
-
-    @Override
-    public void call(final List<WearStation> wearStations) {
-        if (isFinishing()) return;
-
-        if (wearStations.isEmpty()) {
-            mEmptyMessageView.setText(getIntent().getStringExtra(WearExtras.EXTRA_NO_STATIONS_MESSAGE));
-            mStationList.setVisibility(View.GONE);
-            mEmptyMessageView.setVisibility(View.VISIBLE);
-        } else {
-            mStationList.setVisibility(View.VISIBLE);
-            mEmptyMessageView.setVisibility(View.GONE);
-
-            final ListType listType = getListType();
-            if (listType == ListType.FOR_YOU) {
-                mAdapter = mAdapterFactory.createForYouAdapter(wearStations);
-                setAdapterAndScroll();
-            } else if (listType == ListType.MY_STATIONS) {
-                mAdapter = mAdapterFactory.createMyStationsAdapter(wearStations);
-                setAdapterAndScroll();
-            }
-        }
+        mEventBus.unregister(this);
     }
 
     private final WearableListView.ClickListener onItemClickedListener = new WearableListView.ClickListener() {
@@ -164,6 +140,36 @@ public class PickStationActivity extends BaseActivity implements Action1<List<We
         }
 
         return path;
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnStations event) {
+        if (isFinishing()) return;
+
+        if (event.path().equals(stationsListPath())) {
+            final List<WearStation> wearStations = event.stations();
+            if (wearStations == null || wearStations.isEmpty()) {
+                mEmptyMessageView.setText(getIntent().getStringExtra(WearExtras.EXTRA_NO_STATIONS_MESSAGE));
+                mStationList.setVisibility(View.GONE);
+                mEmptyMessageView.setVisibility(View.VISIBLE);
+            } else {
+                mStationList.setVisibility(View.VISIBLE);
+                mEmptyMessageView.setVisibility(View.GONE);
+
+                final ListType listType = getListType();
+                if (listType == ListType.FOR_YOU) {
+                    mAdapter = mAdapterFactory.createForYouAdapter(wearStations);
+                    setAdapterAndScroll();
+                } else if (listType == ListType.MY_STATIONS) {
+                    mAdapter = mAdapterFactory.createMyStationsAdapter(wearStations);
+                    setAdapterAndScroll();
+                }
+            }
+        }
+    }
+
+    public void refresh() {
+        mConnectionManager.getDataItems(stationsListPath(), (path, map) -> onEventMainThread(OnStations.fromDataMap(map, path)));
     }
 
 }

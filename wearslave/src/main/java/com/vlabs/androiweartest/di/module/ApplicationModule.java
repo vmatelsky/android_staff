@@ -7,7 +7,6 @@ import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.connection.ConnectionManagerImpl;
 import com.vlabs.wearmanagers.message.MessageManager;
@@ -17,6 +16,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 
 @Module
 public class ApplicationModule {
@@ -30,6 +30,12 @@ public class ApplicationModule {
     @Singleton
     public Context appContext() {
         return mApp;
+    }
+
+    @Provides
+    @Singleton
+    public EventBus eventBus() {
+        return new EventBus();
     }
 
     @Provides

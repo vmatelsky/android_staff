@@ -10,9 +10,10 @@ import android.widget.TextView;
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.events.data.OnStations;
+import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import rx.functions.Action1;
 
 public class PlayStationActivity extends BaseActivity implements Action1<List<WearStation>> {
@@ -39,7 +41,8 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     @Inject
     Analytics mAnalytics;
 
-    private StationListModel mStationListModel;
+    @Inject
+    EventBus mEventBus;
 
     private WearStation mStation;
     private TextView mStationButton;
@@ -50,7 +53,7 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
         public void onClick(View v) {
             if (mStation != null) {
                 clearPlayButton();
-                mPlayerManager.playStation(mStation, mStationListModel.getWearPlayedFrom(mStation));
+                mPlayerManager.playStation(mStation, PlayedFromUtils.getWearPlayedFrom(mStation, getPath()));
                 tagPlay();
                 finishAffinity();
             }
@@ -67,18 +70,16 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
 
         final String titleText = getIntent().getStringExtra(WearExtras.EXTRA_TITLE);
 
-        final String path = getIntent().getStringExtra(WearExtras.EXTRA_STATION_LIST_PATH);
-        mStationListModel = new StationListModel(mMessageManager, mConnectionManager, path);
-
         mStationButton = (TextView) findViewById(R.id.station_name_button);
         mStationBackground = (ImageByDataPathView) findViewById(R.id.station_background);
         final TextView title = (TextView) findViewById(R.id.title);
         title.setText(titleText);
 
         mStationButton.setOnClickListener(onPlayStationListener);
+    }
 
-        mStationListModel.onStationsChanged().subscribe(this);
-        mStationListModel.refresh();
+    private String getPath() {
+        return getIntent().getStringExtra(WearExtras.EXTRA_STATION_LIST_PATH);
     }
 
     private void updateStationUi() {
@@ -116,13 +117,13 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     @Override
     protected void onStart() {
         super.onStart();
-        mStationListModel.startListening();
+        mEventBus.register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mStationListModel.stopListening();
+        mEventBus.unregister(this);
     }
 
     private void verifyIntent() {
@@ -135,15 +136,25 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
         mAnalytics.broadcastRemoteAction(WearAnalyticsConstants.WearPlayerAction.PLAY);
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnStations event) {
+        if (isFinishing()) return;
+
+        if (event.path().equals(getPath())) {
+            final List<WearStation> wearStations = event.stations();
+            if (wearStations == null || wearStations.isEmpty()) {
+                mStationBackground.setImageBitmap(null);
+                mStation = null;
+            } else {
+                mStation = wearStations.get(0);
+                mStationBackground.setImagePath(mStation.getImagePath());
+            }
+            updateStationUi();
+        }
+    }
+
     @Override
     public void call(final List<WearStation> wearStations) {
-        if (wearStations.isEmpty()) {
-            mStationBackground.setImageBitmap(null);
-            mStation = null;
-        } else {
-            mStation = wearStations.get(0);
-            mStationBackground.setImagePath(mStation.getImagePath());
-        }
-        updateStationUi();
+
     }
 }
