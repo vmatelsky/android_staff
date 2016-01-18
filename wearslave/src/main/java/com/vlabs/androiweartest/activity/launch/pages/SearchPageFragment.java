@@ -56,12 +56,7 @@ public class SearchPageFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         ImageView iconView = (ImageView) view.findViewById(R.id.icon_search);
-        iconView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                onIconViewPressed();
-            }
-        });
+        iconView.setOnClickListener(this::onIconViewPressed);
     }
 
     @Override
@@ -84,7 +79,7 @@ public class SearchPageFragment extends BaseFragment {
         }
     }
 
-    private void onIconViewPressed() {
+    private void onIconViewPressed(final View view) {
         if (mConnectionManager.isConnected()) {
             startVoiceRecognition();
         } else {

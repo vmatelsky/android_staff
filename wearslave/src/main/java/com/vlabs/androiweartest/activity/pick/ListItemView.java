@@ -7,22 +7,13 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.WearApplication;
 
 public enum ListItemView {
-    STATION(new ViewHolderCreator() {
-        @Override
-        public WearableListView.ViewHolder create() {
-            return new WearableListView.ViewHolder(View.inflate(WearApplication.instance(), R.layout.list_station_item, null));
-        }
-    }),
-    MESSAGE(new ViewHolderCreator() {
-        @Override
-        public WearableListView.ViewHolder create() {
-            return new WearableListView.ViewHolder(View.inflate(WearApplication.instance(), R.layout.list_message_item, null));
-        }
-    });
+    STATION(() -> new WearableListView.ViewHolder(View.inflate(WearApplication.instance(), R.layout.list_station_item, null))),
+
+    MESSAGE(() -> new WearableListView.ViewHolder(View.inflate(WearApplication.instance(), R.layout.list_message_item, null)));
 
     private final ViewHolderCreator mViewHolderCreator;
 
-    private ListItemView(ViewHolderCreator viewHolderCreator) {
+    ListItemView(ViewHolderCreator viewHolderCreator) {
         mViewHolderCreator = viewHolderCreator;
     }
 

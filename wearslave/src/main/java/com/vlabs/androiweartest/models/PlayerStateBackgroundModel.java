@@ -24,12 +24,7 @@ public class PlayerStateBackgroundModel implements Action1<WearPlayerState> {
 
     private PublishSubject<Drawable> mBackgroundChangedListeners = PublishSubject.create();
 
-    private final Receiver<Bitmap> mBackgroundReceiver = new Receiver<Bitmap>() {
-        @Override
-        public void receive(final Bitmap bitmap) {
-            invokeOnBackgroundChanged(new BitmapDrawable(bitmap));
-        }
-    };
+    private final Receiver<Bitmap> mBackgroundReceiver = this::invokeOnBackgroundChanged;
 
     public PlayerStateBackgroundModel(
             final Context context,
@@ -43,6 +38,10 @@ public class PlayerStateBackgroundModel implements Action1<WearPlayerState> {
 
     public Observable<Drawable> onBackgroundChangedListener() {
         return mBackgroundChangedListeners;
+    }
+
+    private void invokeOnBackgroundChanged(Bitmap bitmap) {
+        mBackgroundChangedListeners.onNext(new BitmapDrawable(bitmap));
     }
 
     private void invokeOnBackgroundChanged(Drawable drawable) {

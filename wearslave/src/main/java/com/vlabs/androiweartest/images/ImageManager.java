@@ -22,12 +22,9 @@ public class ImageManager implements ConnectionManager.ImageListener {
             receiver.receive(fromCache);
         }
 
-        mImageLoader.imageByPath(imagePath, new Receiver<Bitmap>() {
-            @Override
-            public void receive(final Bitmap bitmap) {
-                onImage(imagePath, bitmap);
-                receiver.receive(bitmap);
-            }
+        mImageLoader.imageByPath(imagePath, bitmap -> {
+            onImage(imagePath, bitmap);
+            receiver.receive(bitmap);
         });
     }
 

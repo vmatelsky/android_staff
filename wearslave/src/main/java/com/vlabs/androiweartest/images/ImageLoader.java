@@ -31,16 +31,13 @@ public class ImageLoader {
     }
 
     public void imageByPath(final String imagePath, final Receiver<Bitmap> receiver) {
-        mConnectionManager.getDataItems(imagePath, new ConnectionManager.DataListener() {
-            @Override
-            public void onData(final String path, final DataMap map) {
-                final Asset asset = assetFromMap(map);
+        mConnectionManager.getDataItems(imagePath, (path, map) -> {
+            final Asset asset = assetFromMap(map);
 
-                if (asset == null) {
-                    requestImageToBeLoaded(path);
-                } else {
-                    resolveBitmap(path, asset, receiver);
-                }
+            if (asset == null) {
+                requestImageToBeLoaded(path);
+            } else {
+                resolveBitmap(path, asset, receiver);
             }
         });
     }
@@ -62,11 +59,6 @@ public class ImageLoader {
     }
 
     private void resolveBitmap(final String path, final Asset asset, final Receiver<Bitmap> receiver) {
-        mConnectionManager.getAssetAsBitmap(path, asset, new ConnectionManager.ImageListener() {
-            @Override
-            public void onImage(final String path, final Bitmap bitmap) {
-                receiver.receive(bitmap);
-            }
-        });
+        mConnectionManager.getAssetAsBitmap(path, asset, (path1, bitmap) -> receiver.receive(bitmap));
     }
 }

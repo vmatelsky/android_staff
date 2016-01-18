@@ -41,10 +41,10 @@ public class ForYouPageFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         final ImageView iconView = (ImageView) view.findViewById(R.id.icon_for_you);
-        iconView.setOnClickListener(v -> onIconViewPressed());
+        iconView.setOnClickListener(this::onIconViewPressed);
     }
 
-    private void onIconViewPressed() {
+    private void onIconViewPressed(final View view) {
         if (mConnectionManager.isConnected()) {
             launchStationList();
         } else {

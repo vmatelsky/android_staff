@@ -13,8 +13,6 @@ import com.vlabs.wearmanagers.message.MessageManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -102,11 +100,6 @@ public class StationListModel {
     }
 
     public void refresh() {
-        mConnectionManager.getDataItems(mPath, new ConnectionManager.DataListener() {
-            @Override
-            public void onData(final String path, final DataMap map) {
-                onStationsChanged(processDataMap(map));
-            }
-        });
+        mConnectionManager.getDataItems(mPath, (path, map) -> onStationsChanged(processDataMap(map)));
     }
 }

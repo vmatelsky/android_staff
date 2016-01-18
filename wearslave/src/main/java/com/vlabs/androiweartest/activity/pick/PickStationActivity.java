@@ -129,12 +129,9 @@ public class PickStationActivity extends BaseActivity implements Action1<List<We
     };
 
     private void setAdapterAndScroll() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mStationList.setAdapter(mAdapter);
-                mStationList.smoothScrollToPosition(0);
-            }
+        runOnUiThread(() -> {
+            mStationList.setAdapter(mAdapter);
+            mStationList.smoothScrollToPosition(0);
         });
     }
 
