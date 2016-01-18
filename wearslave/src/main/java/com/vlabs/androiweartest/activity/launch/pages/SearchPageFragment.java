@@ -1,7 +1,6 @@
 package com.vlabs.androiweartest.activity.launch.pages;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -12,14 +11,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseFragment;
 import com.vlabs.androiweartest.activity.search.SearchActivity;
+import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
 
 import java.util.ArrayList;
 
-public class SearchPageFragment extends Fragment{
+import javax.inject.Inject;
+
+public class SearchPageFragment extends BaseFragment {
 
     private static final int REQUEST_SPEECH = 1;
 
@@ -29,6 +32,18 @@ public class SearchPageFragment extends Fragment{
         final SearchPageFragment fragment = new SearchPageFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Inject
+    Analytics mAnalytics;
+
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getComponent().inject(this);
     }
 
     @Override
@@ -62,7 +77,7 @@ public class SearchPageFragment extends Fragment{
                 if (terms.isEmpty()) {
                     showToast(getString(R.string.search_no_result));
                 } else {
-                    WearApplication.instance().analytics().broadcastRemoteControl(WearAnalyticsConstants.WearBrowse.VOICE_SEARCH);
+                    mAnalytics.broadcastRemoteControl(WearAnalyticsConstants.WearBrowse.VOICE_SEARCH);
                     searchFor(terms.get(0));
                 }
             }
@@ -70,7 +85,7 @@ public class SearchPageFragment extends Fragment{
     }
 
     private void onIconViewPressed() {
-        if (WearApplication.instance().connectionManager().isConnected()) {
+        if (mConnectionManager.isConnected()) {
             startVoiceRecognition();
         } else {
             showNoConnectionMsg();

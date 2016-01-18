@@ -1,9 +1,9 @@
 package com.vlabs.androiweartest.activity.pick;
 
-import android.app.Activity;
 import android.support.wearable.view.WearableListView;
 import android.view.ViewGroup;
 
+import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class ListItemAdapter extends WearableListView.Adapter implements Clickab
     }
 
     @Override
-    public void handleClick(final Activity activity, final int index) {
+    public void handleClick(final BaseActivity activity, final int index) {
         mItems.get(index).onClick(activity);
     }
 }

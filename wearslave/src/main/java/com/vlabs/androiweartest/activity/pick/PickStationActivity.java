@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.adapters.AdapterFactory;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
@@ -18,12 +18,16 @@ import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 
-public class PickStationActivity extends Activity implements Action1<List<WearStation>> {
+public class PickStationActivity extends BaseActivity implements Action1<List<WearStation>> {
 
     private enum ListType {
         FOR_YOU,
@@ -37,7 +41,15 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
         return intent;
     }
 
-    private Analytics mAnalytics;
+    @Inject
+    Analytics mAnalytics;
+
+    @Inject
+    MessageManager mMessageManager;
+
+    @Inject
+    ConnectionManager mConnectionManager;
+
     private WearableListView mStationList;
     private TextView mEmptyMessageView;
     private WearableListView.Adapter mAdapter;
@@ -48,13 +60,14 @@ public class PickStationActivity extends Activity implements Action1<List<WearSt
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getComponent().inject(this);
+
         setContentView(R.layout.activity_pick_station);
 
         mStationList = (WearableListView) findViewById(R.id.station_list);
         mEmptyMessageView = (TextView) findViewById(R.id.empty_message);
 
-        mAnalytics = WearApplication.instance().analytics();
-        mModel = new StationListModel(WearApplication.instance().messageManager(), stationsListPath());
+        mModel = new StationListModel(mMessageManager, mConnectionManager, stationsListPath());
         mModel.onStationsChanged().subscribe(this);
 
         mAdapterFactory = new AdapterFactory(this);

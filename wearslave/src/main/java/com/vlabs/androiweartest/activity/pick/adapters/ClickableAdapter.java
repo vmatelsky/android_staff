@@ -1,7 +1,7 @@
 package com.vlabs.androiweartest.activity.pick.adapters;
 
-import android.app.Activity;
+import com.vlabs.androiweartest.activity.BaseActivity;
 
 public interface ClickableAdapter {
-    void handleClick(final Activity activity, final int index);
+    void handleClick(final BaseActivity activity, final int index);
 }

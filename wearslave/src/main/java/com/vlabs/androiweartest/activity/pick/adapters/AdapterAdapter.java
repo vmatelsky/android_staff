@@ -1,8 +1,9 @@
 package com.vlabs.androiweartest.activity.pick.adapters;
 
-import android.app.Activity;
 import android.support.wearable.view.WearableListView;
 import android.view.ViewGroup;
+
+import com.vlabs.androiweartest.activity.BaseActivity;
 
 public class AdapterAdapter extends WearableListView.Adapter implements ClickableAdapter {
     private final WearableListView.Adapter[] mAdapters;
@@ -76,7 +77,7 @@ public class AdapterAdapter extends WearableListView.Adapter implements Clickabl
     }
 
     @Override
-    public void handleClick(final Activity activity, final int index) {
+    public void handleClick(final BaseActivity activity, final int index) {
         final AdapterIndex adapterIndex = adjustIndex(index);
         final WearableListView.Adapter adapter = getAdapter(adapterIndex);
 

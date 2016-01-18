@@ -2,10 +2,7 @@ package com.vlabs.wearmanagers.message;
 
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
-import com.vlabs.wearmanagers.Receiver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +15,6 @@ public class MessageManagerImpl implements MessageManager {
 
     private final HashMap<String, PublishSubject<MessageEvent>> mOnMessageByPath = new HashMap<>();
     private final HashMap<String, PublishSubject<DataEvent>> mOnDataByPath = new HashMap<>();
-
 
     @Override
     public Observable<MessageEvent> onMessageByPath(final String path) {

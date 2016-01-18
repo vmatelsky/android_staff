@@ -11,27 +11,40 @@ import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class ImageByDataPathView extends ImageView implements Action1<DataEvent>, ConnectionManager.ImageListener, ConnectionManager.DataListener {
 
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Inject
+    MessageManager mMessageManager;
+
+
     private String mPath;
     private Subscription mCurrentSubscription;
 
     public ImageByDataPathView(Context context) {
         super(context);
+        WearApplication.instance().appComponent().inject(this);
     }
 
     public ImageByDataPathView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        WearApplication.instance().appComponent().inject(this);
     }
 
     public ImageByDataPathView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        WearApplication.instance().appComponent().inject(this);
     }
 
     public void setImagePath(final String newPath) {
@@ -68,13 +81,13 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
             setImageBitmap(null);
         } else {
             mCurrentSubscription = subscribeOnceByPath(mCurrentSubscription, mPath);
-            WearApplication.instance().connectionManager().getDataItems(mPath, this);
+            mConnectionManager.getDataItems(mPath, this);
         }
     }
 
     private Subscription subscribeOnceByPath(final Subscription currentSubscription, final String path) {
         if (currentSubscription == null || currentSubscription.isUnsubscribed()) {
-            return WearApplication.instance().messageManager().onDataByPath(path).subscribe(this);
+            return mMessageManager.onDataByPath(path).subscribe(this);
         }
         return currentSubscription;
     }
@@ -103,6 +116,6 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
         if (map == null) return;
 
         final Asset asset = map.getAsset(Data.KEY_IMAGE_ASSET);
-        WearApplication.instance().connectionManager().getAssetAsBitmap(mPath, asset, this);
+        mConnectionManager.getAssetAsBitmap(mPath, asset, this);
     }
 }

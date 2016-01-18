@@ -2,11 +2,10 @@ package com.vlabs.androiweartest.activity.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.wearable.activity.WearableActivity;
 import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.helpers.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.models.StationListModel;
@@ -15,22 +14,32 @@ import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 
-public class SearchActivity extends WearableActivity implements Action1<List<WearStation>> {
+public class SearchActivity extends BaseActivity implements Action1<List<WearStation>> {
 
-    private static final int REQUEST_PLAY = 2;
+    @Inject
+    Analytics mAnalytics;
 
-    private Analytics mAnalytics;
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Inject
+    MessageManager mMessageManager;
+
+
     private StationListModel mModel;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
 
         if (!wasLaunchedWithQuery()) {
             showToast("No query is passed");
@@ -38,8 +47,11 @@ public class SearchActivity extends WearableActivity implements Action1<List<Wea
             return;
         }
 
-        mAnalytics = WearApplication.instance().analytics();
-        mModel = new StationListModel(WearApplication.instance().messageManager(), Data.PATH_STATIONS_SEARCH);
+        setContentView(R.layout.activity_search);
+
+        getComponent().inject(this);
+
+        mModel = new StationListModel(mMessageManager, mConnectionManager, Data.PATH_STATIONS_SEARCH);
         mModel.onStationsChanged().subscribe(this);
         searchFor(getIntent().getStringExtra(WearExtras.EXTRA_QUERY));
 
@@ -65,7 +77,7 @@ public class SearchActivity extends WearableActivity implements Action1<List<Wea
     }
 
     private void searchFor(final String term) {
-        WearApplication.instance().connectionManager().broadcastMessage(
+        mConnectionManager.broadcastMessage(
                 Message.PATH_SEARCH,
                 new DataMapBuilder().putString(Message.KEY_SEARCH_TERM, term).getMap());
     }

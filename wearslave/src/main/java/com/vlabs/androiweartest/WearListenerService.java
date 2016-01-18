@@ -5,14 +5,21 @@ import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
+import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class WearListenerService extends WearableListenerService {
+
+    @Inject
+    MessageManager mMessageManager;
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        WearApplication.instance().messageManager().handleMessage(messageEvent);
+        WearApplication.instance().appComponent().inject(this);
+        mMessageManager.handleMessage(messageEvent);
     }
 
     @Override
@@ -21,7 +28,7 @@ public class WearListenerService extends WearableListenerService {
 
         final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
         for (DataEvent event : events) {
-            WearApplication.instance().messageManager().handleData(event);
+            mMessageManager.handleData(event);
         }
     }
 

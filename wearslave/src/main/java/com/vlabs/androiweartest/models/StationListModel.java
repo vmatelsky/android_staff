@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.WearStation;
@@ -13,6 +12,8 @@ import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -23,6 +24,8 @@ public class StationListModel {
 
     private final String mPath;
     private final MessageManager mMessageManager;
+    private final ConnectionManager mConnectionManager;
+
     private final PublishSubject<List<WearStation>> mOnStationsChanged = PublishSubject.create();
 
     private Action1<DataEvent> mOnStationListChanged = new Action1<DataEvent>() {
@@ -54,9 +57,13 @@ public class StationListModel {
         return stations;
     }
 
-    public StationListModel(final MessageManager messageManager, final String path) {
+    public StationListModel(
+            final MessageManager messageManager,
+            final ConnectionManager connectionManager,
+            final String path) {
         mPath = path;
         mMessageManager = messageManager;
+        mConnectionManager = connectionManager;
     }
 
     public void startListening() {
@@ -95,7 +102,7 @@ public class StationListModel {
     }
 
     public void refresh() {
-        WearApplication.instance().connectionManager().getDataItems(mPath, new ConnectionManager.DataListener() {
+        mConnectionManager.getDataItems(mPath, new ConnectionManager.DataListener() {
             @Override
             public void onData(final String path, final DataMap map) {
                 onStationsChanged(processDataMap(map));

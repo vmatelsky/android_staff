@@ -1,18 +1,24 @@
 package com.vlabs.androiweartest.activity.pick.adapters.items;
 
-import android.app.Activity;
 import android.support.wearable.view.WearableListView;
 import android.widget.Toast;
 
 import com.clearchannel.iheartradio.controller.view.StationListViewItem;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
+import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.ListItemEntity;
 import com.vlabs.androiweartest.activity.pick.ListItemView;
+import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
+import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.wearcontract.WearStation;
 
+import javax.inject.Inject;
+
 public class StationListItemEntity implements ListItemEntity {
+
+    @Inject
+    PlayerManager mPlayerManager;
+
     private final WearStation mWearStation;
     private final WearAnalyticsConstants.WearPlayedFrom mPlayedFrom;
 
@@ -32,9 +38,10 @@ public class StationListItemEntity implements ListItemEntity {
     }
 
     @Override
-    public void onClick(Activity activity) {
+    public void onClick(BaseActivity activity) {
         Toast.makeText(activity.getApplicationContext(), R.string.wear_loading, Toast.LENGTH_LONG).show();
-        WearApplication.instance().playerManager().playStation(mWearStation, mPlayedFrom);
+        activity.getComponent().inject(this);
+        mPlayerManager.playStation(mWearStation, mPlayedFrom);
         activity.finishAffinity();
     }
 

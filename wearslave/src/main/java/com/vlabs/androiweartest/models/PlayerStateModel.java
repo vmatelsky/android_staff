@@ -4,7 +4,6 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearPlayerState;
-import com.vlabs.wearmanagers.Receiver;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import rx.Observable;

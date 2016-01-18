@@ -1,6 +1,5 @@
 package com.vlabs.androiweartest.activity.launch.pages;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,14 +9,26 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseFragment;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
 import com.vlabs.wearcontract.Data;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
 
-public class MyStationsFragment extends Fragment {
+import javax.inject.Inject;
+
+public class MyStationsFragment extends BaseFragment {
 
     public static MyStationsFragment newInstance() {
         return new MyStationsFragment();
+    }
+
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getComponent().inject(this);
     }
 
     @Override
@@ -38,15 +49,15 @@ public class MyStationsFragment extends Fragment {
         });
     }
 
-    protected void onIconViewPressed() {
-        if (WearApplication.instance().connectionManager().isConnected()) {
+    private void onIconViewPressed() {
+        if (mConnectionManager.isConnected()) {
             launchStationList();
         } else {
             showNoConnectionMsg();
         }
     }
 
-    protected void launchStationList() {
+    private void launchStationList() {
         launchPickStation(createPickStationIntent());
     }
 

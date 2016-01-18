@@ -3,25 +3,41 @@ package com.vlabs.androiweartest.activity.search;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.wearable.activity.WearableActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.helpers.analytics.Analytics;
+import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.androiweartest.models.StationListModel;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 
-public class PlayStationActivity extends WearableActivity implements Action1<List<WearStation>> {
+public class PlayStationActivity extends BaseActivity implements Action1<List<WearStation>> {
+
+    @Inject
+    PlayerManager mPlayerManager;
+
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Inject
+    MessageManager mMessageManager;
+
+    @Inject
+    Analytics mAnalytics;
 
     private StationListModel mStationListModel;
 
@@ -34,7 +50,7 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
         public void onClick(View v) {
             if (mStation != null) {
                 clearPlayButton();
-                WearApplication.instance().playerManager().playStation(mStation, mStationListModel.getWearPlayedFrom(mStation));
+                mPlayerManager.playStation(mStation, mStationListModel.getWearPlayedFrom(mStation));
                 tagPlay();
                 finishAffinity();
             }
@@ -47,11 +63,12 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
         setContentView(R.layout.activity_play_station);
         verifyIntent();
 
+        getComponent().inject(this);
+
         final String titleText = getIntent().getStringExtra(WearExtras.EXTRA_TITLE);
 
         final String path = getIntent().getStringExtra(WearExtras.EXTRA_STATION_LIST_PATH);
-        final MessageManager messageManager = WearApplication.instance().messageManager();
-        mStationListModel = new StationListModel(messageManager, path);
+        mStationListModel = new StationListModel(mMessageManager, mConnectionManager, path);
 
         mStationButton = (TextView) findViewById(R.id.station_name_button);
         mStationBackground = (ImageByDataPathView) findViewById(R.id.station_background);
@@ -115,7 +132,7 @@ public class PlayStationActivity extends WearableActivity implements Action1<Lis
     }
 
     void tagPlay() {
-        WearApplication.instance().analytics().broadcastRemoteAction(WearAnalyticsConstants.WearPlayerAction.PLAY);
+        mAnalytics.broadcastRemoteAction(WearAnalyticsConstants.WearPlayerAction.PLAY);
     }
 
     @Override

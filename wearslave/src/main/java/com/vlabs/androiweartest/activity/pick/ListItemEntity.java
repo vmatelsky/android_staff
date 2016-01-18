@@ -1,10 +1,11 @@
 package com.vlabs.androiweartest.activity.pick;
 
-import android.app.Activity;
 import android.support.wearable.view.WearableListView;
+
+import com.vlabs.androiweartest.activity.BaseActivity;
 
 public interface ListItemEntity {
     void bindViewHolder(WearableListView.ViewHolder viewHolder);
-    void onClick(Activity activity);
+    void onClick(BaseActivity activity);
     ListItemView getListItemView();
 }

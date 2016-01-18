@@ -3,6 +3,7 @@ package com.clearchannel.iheartradio.controller.view;
 import android.app.Activity;
 import android.support.wearable.view.WearableListView;
 
+import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.ListItemEntity;
 import com.vlabs.androiweartest.activity.pick.ListItemView;
 
@@ -24,7 +25,7 @@ public class MessageListViewItemEntity implements ListItemEntity {
     }
 
     @Override
-    public void onClick(Activity activity) {
+    public void onClick(BaseActivity activity) {
 
     }
 
