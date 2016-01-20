@@ -1,5 +1,6 @@
 package com.vlabs.androiweartest.activity.showMore;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.events.message.OnPlayerState;
 import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.wearcontract.Data;
@@ -45,6 +47,8 @@ public class ShowMoreActivity extends BaseActivity {
         setContentView(R.layout.show_more_activity);
 
         mBackground = (ImageByDataPathView) findViewById(R.id.background);
+
+        findViewById(R.id.icon_show_more).setOnClickListener(v -> onShowMore());
     }
 
     @Override
@@ -58,6 +62,12 @@ public class ShowMoreActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         mEventBus.unregister(this);
+    }
+
+    private void onShowMore() {
+        Intent intent = new Intent(this, WearMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @SuppressWarnings("unused")

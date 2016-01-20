@@ -18,4 +18,5 @@
     <string name="recently_played_title">Recently Played</string>
     <string name="search_no_result">Not able to recognize. Try again?</string>
     <string name="search_result_title">Search Result</string>
+    <string name="show_more_title">Show More</string>
 </resources>
