@@ -1,4 +1,4 @@
-package com.vlabs.androiweartest.helpers;
+package com.vlabs;
 
 import com.google.android.gms.wearable.DataMap;
 

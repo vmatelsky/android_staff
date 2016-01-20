@@ -1,7 +1,7 @@
 package com.vlabs.androiweartest.helpers.analytics;
 
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.helpers.DataMapBuilder;
+import com.vlabs.DataMapBuilder;
 import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearmanagers.connection.ConnectionManager;

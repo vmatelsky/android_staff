@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.vlabs.wearmaster.MainActivity">
+    tools:context="com.vlabs.androiweartest.MainActivity">
 
     <Button
         android:id="@+id/shuffle_my_stations"
@@ -31,6 +31,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/shuffle_for_you"
         android:text="@string/send_image"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/send_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/send_image"
+        android:text="@string/send_feedback"
         android:layout_centerInParent="true"/>
 
     <TextView

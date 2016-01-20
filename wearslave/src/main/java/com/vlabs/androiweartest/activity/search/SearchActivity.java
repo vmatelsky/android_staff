@@ -8,7 +8,7 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.events.data.EventType;
 import com.vlabs.androiweartest.events.data.OnStations;
-import com.vlabs.androiweartest.helpers.DataMapBuilder;
+import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.wearcontract.Data;
 import com.vlabs.wearcontract.Message;

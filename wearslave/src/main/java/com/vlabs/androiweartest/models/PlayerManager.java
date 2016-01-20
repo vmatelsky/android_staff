@@ -3,7 +3,7 @@ package com.vlabs.androiweartest.models;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.helpers.DataMapBuilder;
+import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
 import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearPlayerState;

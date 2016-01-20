@@ -1,7 +1,7 @@
 package com.vlabs.androiweartest.helpers.analytics;
 
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.helpers.DataMapBuilder;
+import com.vlabs.DataMapBuilder;
 
 public class WearAnalyticsConstants {
     private static final int NONE = -1;

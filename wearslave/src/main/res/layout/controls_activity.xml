@@ -3,10 +3,9 @@
              xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@color/notification_background"
-             xmlns:app="http://schemas.android.com/apk/res-auto">
+             android:background="@color/notification_background">
 
-    <ImageView
+    <com.clearchannel.iheartradio.controller.view.ImageByDataPathView
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -17,26 +16,21 @@
           android:background="@color/semi_transparent_bg" />
 
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/is_paused_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/content_controls" />
+        <include layout="@layout/is_paused_notification_action" />
 
     </FrameLayout>
 
-    <android.support.wearable.view.BoxInsetLayout
+    <FrameLayout
+        android:id="@+id/is_playing_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.wearable.view.DotsPageIndicator
-            android:id="@+id/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:padding="@dimen/page_indicator_padding"
-            app:layout_box="left|bottom|right" />
+        <include layout="@layout/is_playing_notification_action" />
 
-    </android.support.wearable.view.BoxInsetLayout>
+    </FrameLayout>
 
 </FrameLayout>

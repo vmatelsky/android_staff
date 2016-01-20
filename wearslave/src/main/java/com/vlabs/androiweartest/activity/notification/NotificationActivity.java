@@ -1,55 +1,149 @@
 package com.vlabs.androiweartest.activity.notification;
 
+import android.animation.ObjectAnimator;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 
+import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
+import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.activity.notification.state.IsPausedViewController;
+import com.vlabs.androiweartest.activity.notification.state.IsPlayingViewController;
+import com.vlabs.androiweartest.events.message.OnPlayerState;
+import com.vlabs.androiweartest.helpers.analytics.Analytics;
+import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.wearcontract.Data;
+import com.vlabs.wearcontract.WearPlayerState;
+import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearmanagers.connection.ConnectionManager;
 
-public class NotificationActivity extends FragmentActivity {
-//    PlayerStateBackgroundPresenter mPlayerStateBackgroundPresenter;
-    ControlPageViewController mControlPageView;
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
+
+
+public class NotificationActivity extends BaseActivity {
+
+    @Inject
+    PlayerManager playerManager;
+
+    @Inject
+    Analytics mAnalytics;
+
+    @Inject
+    ConnectionManager mConnectionManager;
+
+    @Inject
+    EventBus eventBus;
+
+    private ImageByDataPathView background;
+    private View backgroundTint;
+    private IsPlayingViewController mIsPlayingController;
+    private IsPausedViewController mIsPausedController;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.controls_activity);
 
-        mControlPageView = new ControlPageViewController(WearApplication.instance(), findViewById(R.id.root));
+        getComponent().inject(this);
 
-//        StationListModel stationListModel = new StationListModel(WearApplication.instance().connectionManager(), Data.PATH_STATIONS_RECENT);
-//        PlayerStateModel playerStateModel = new PlayerStateModel(WearApplication.instance().connectionManager(), WearApplication.instance().playerManager());
-//        mPlayerStateBackgroundPresenter = new PlayerStateBackgroundPresenter(
-//                stationListModel,
-//                playerStateModel,
-//                new UiChangeExecutor() {
-//                    @Override
-//                    public void execute(Runnable runnable) {
-//                        if (runnable == null || isFinishing()) return;
-//                        runnable.run();
-//                    }
-//                });
-//
-//        mPlayerStateBackgroundPresenter.bind((DataPathAwareImageView) findViewById(R.id.background));
-//        final int pageTotal = getIntent().getIntExtra(WearExtras.EXTRA_PAGE_TOTAL, -1);
-//        final int pageIndex = getIntent().getIntExtra(WearExtras.EXTRA_PAGE_INDEX, -1);
-//        final ViewGroup indicatorContainer = (ViewGroup)findViewById(R.id.page_indicator_container);
-//        new PageIndicator(indicatorContainer, pageTotal, pageIndex);
-    }
+        background = (ImageByDataPathView) findViewById(R.id.background);
+        backgroundTint = findViewById(R.id.background_tint);
 
+        mIsPlayingController = new IsPlayingViewController(
+                findViewById(R.id.is_playing_content),
+                mAnalytics,
+                playerManager
+        );
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mPlayerStateBackgroundPresenter.onResume();
-//        mControlPageView.onStart();
+        mIsPausedController = new IsPausedViewController(
+                findViewById(R.id.is_paused_content),
+                mAnalytics,
+                playerManager
+        );
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-//        mPlayerStateBackgroundPresenter.onPause();
-//        mControlPageView.onStop();
+    protected void onStart() {
+        super.onStart();
+        eventBus.register(this);
+        processPlayerState(playerManager.currentState());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        eventBus.unregister(this);
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnPlayerState event) {
+        if (isFinishing()) return;
+
+        processPlayerState(event.playerState());
+    }
+
+    private void processPlayerState(final WearPlayerState playerState) {
+        if (playerState.isPlaying()) {
+            switchToIsPlayingController(playerState);
+            setBackgroundImagePath(playerState.getImagePath());
+        } else {
+            switchToIsPausedController(playerState);
+        }
+    }
+
+    private void setBackgroundImagePath(final String imagePath) {
+        background.setImagePath(imagePath);
+    }
+
+    private void switchToIsPlayingController(final WearPlayerState state) {
+        fadeIn(backgroundTint);
+
+        mIsPlayingController.show(state);
+        mIsPausedController.hide();
+    }
+
+    private void switchToIsPausedController(final WearPlayerState state) {
+        fadeOut(backgroundTint);
+
+        mIsPlayingController.hide();
+
+        mConnectionManager.getDataItems(Data.PATH_STATIONS_RECENT, (path, map) -> {
+            if (playerManager.isPlaying()) return;
+
+            if (map == null) return;
+
+            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(Data.KEY_STATIONS);
+
+            if (stationMapLists.isEmpty()) {
+                setDefaultBackgroundColor();
+                mIsPausedController.show(null);
+            } else {
+                final WearStation wearStation = WearStation.fromDataMap(stationMapLists.get(0));
+                setBackgroundImagePath(wearStation.getImagePath());
+                mIsPausedController.show(wearStation);
+            }
+        });
+    }
+
+    private void fadeOut(View hidden) {
+        ObjectAnimator.ofFloat(hidden, View.ALPHA, hidden.getAlpha(), 0.0f).start();
+    }
+
+    private void fadeIn(View visible) {
+        ObjectAnimator.ofFloat(visible, View.ALPHA, visible.getAlpha(), 1.0f).start();
+    }
+
+    private void setDefaultBackgroundColor() {
+        final int color = ContextCompat.getColor(this, R.color.notification_background);
+        final ColorDrawable colorDrawable = new ColorDrawable(color);
+        background.setImageDrawable(colorDrawable);
     }
 
 }

@@ -9,8 +9,10 @@ import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.model.ForYouModelWearAdapter;
 import com.vlabs.wearcontract.Data;
+import com.vlabs.wearcontract.Message;
 
 import java.io.ByteArrayOutputStream;
 
@@ -30,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.shuffle_for_you).setOnClickListener(v -> shuffleForYou());
 
         findViewById(R.id.send_image).setOnClickListener(v -> sendImage());
+
+        findViewById(R.id.send_feedback).setOnClickListener(v -> sendFeedback());
+    }
+
+    private void sendFeedback() {
+        MasterApplication.instance().connectionManager().broadcastMessage(Message.PATH_FEEDBACK, new DataMapBuilder().putString(Message.KEY_MESSAGE, "Test feedback").getMap());
     }
 
     private void sendImage() {

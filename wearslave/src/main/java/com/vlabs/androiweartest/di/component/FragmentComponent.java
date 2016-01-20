@@ -3,6 +3,7 @@ package com.vlabs.androiweartest.di.component;
 import com.vlabs.androiweartest.activity.launch.pages.ForYouPageFragment;
 import com.vlabs.androiweartest.activity.launch.pages.MyStationsFragment;
 import com.vlabs.androiweartest.activity.launch.pages.SearchPageFragment;
+import com.vlabs.androiweartest.activity.notification.state.IsPlayingViewController;
 import com.vlabs.androiweartest.di.scope.ActivityScope;
 
 import dagger.Component;
@@ -16,4 +17,6 @@ public interface FragmentComponent {
     void inject(MyStationsFragment myStationsFragment);
 
     void inject(SearchPageFragment searchPageFragment);
+
+    void inject(IsPlayingViewController isPlayingViewController);
 }

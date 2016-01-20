@@ -1,7 +1,7 @@
 package com.vlabs.androiweartest.models;
 
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.helpers.DataMapBuilder;
+import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearStation;
 
