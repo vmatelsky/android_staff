@@ -8,13 +8,15 @@ import com.vlabs.androiweartest.di.module.ApplicationModule;
 
 public class WearApplication extends Application {
 
-    private AppComponent mAppComponent;
-
     private static WearApplication sInstance;
 
     public static WearApplication instance() {
         return sInstance;
     }
+
+    private AppComponent mAppComponent;
+
+    private CommonMessagesHandler mCommonMessagesHandler;
 
     @Override
     public void onCreate() {
@@ -24,6 +26,9 @@ public class WearApplication extends Application {
         mAppComponent = DaggerAppComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
+
+        mCommonMessagesHandler = new CommonMessagesHandler(this, mAppComponent.eventBus());
+        mCommonMessagesHandler.invoke();
     }
 
     public AppComponent appComponent() {

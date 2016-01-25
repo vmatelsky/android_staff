@@ -28,9 +28,9 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
     @Inject
     MessageManager mMessageManager;
 
-
     private String mPath;
     private Subscription mCurrentSubscription;
+    private Subscription mOnConnectedSubscription;
 
     public ImageByDataPathView(Context context) {
         super(context);
@@ -63,17 +63,30 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
         super.onAttachedToWindow();
         if (mPath == null) return;
         mCurrentSubscription = subscribeOnceByPath(mCurrentSubscription, mPath);
-        getImage();
+
+        if (mConnectionManager.isConnected()) {
+            getImage();
+        } else {
+            mOnConnectedSubscription = mConnectionManager.onConnected().subscribe(aVoid -> {
+                getImage();
+            });
+        }
+
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        if (mCurrentSubscription != null) {
-            mCurrentSubscription.unsubscribe();
-            mCurrentSubscription = null;
+        mCurrentSubscription = getUnsubscribed(mCurrentSubscription);
+        mOnConnectedSubscription = getUnsubscribed(mOnConnectedSubscription);
+    }
+
+    public Subscription getUnsubscribed(Subscription subscription) {
+        if (subscription != null) {
+            subscription.unsubscribe();
         }
+        return null;
     }
 
     private void getImage() {

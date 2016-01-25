@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 public class ConnectionManagerImpl implements
         ConnectionManager,
         GoogleApiClient.ConnectionCallbacks,
@@ -33,6 +36,7 @@ public class ConnectionManagerImpl implements
     private static final long ASSET_TIMEOUT = 10;
 
     private GoogleApiClient mGoogleApiClient;
+    private PublishSubject<Void> mOnConnected = PublishSubject.create();
 
     public ConnectionManagerImpl(final Context context) {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
@@ -62,6 +66,7 @@ public class ConnectionManagerImpl implements
     @Override
     public void onConnected(final Bundle connectionHint) {
         Log.d(TAG, "onConnected: " + connectionHint);
+        mOnConnected.onNext(null);
     }
 
     @Override
@@ -78,6 +83,11 @@ public class ConnectionManagerImpl implements
     @Override
     public boolean isConnected() {
         return mGoogleApiClient.isConnected();
+    }
+
+    @Override
+    public Observable<Void> onConnected() {
+        return mOnConnected;
     }
 
     @Override
