@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseFragment;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
-import com.vlabs.wearcontract.Data;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.wearcontract.WearDataEvent;
 
 import javax.inject.Inject;
 
@@ -57,7 +57,7 @@ public class ForYouPageFragment extends BaseFragment {
     }
 
     private Intent createPickStationIntent() {
-        return PickStationActivity.createIntent(getActivity(), Data.PATH_STATIONS_FOR_YOU, getString(R.string.no_stations_for_you));
+        return PickStationActivity.createIntent(getActivity(), WearDataEvent.PATH_STATIONS_FOR_YOU, getString(R.string.no_stations_for_you));
     }
 
     private void showNoConnectionMsg() {

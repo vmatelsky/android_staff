@@ -2,9 +2,9 @@ package com.vlabs.androiweartest.helpers.analytics;
 
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.DataMapBuilder;
-import com.vlabs.wearcontract.Message;
+import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 
 public class Analytics {
     private final ConnectionManager mConnectionManager;
@@ -22,7 +22,7 @@ public class Analytics {
     }
 
     private void broadcast(DataMap data) {
-        mConnectionManager.broadcastMessage(Message.PATH_ANALYTICS, data);
+        mConnectionManager.broadcastMessage(WearMessage.ANALYTICS, data);
     }
 
     private static DataMap makeRemoteActionData(WearAnalyticsConstants.WearPlayerAction action) {

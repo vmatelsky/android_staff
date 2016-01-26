@@ -5,22 +5,20 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.data.FreezableUtils;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 import com.vlabs.androiweartest.activity.notification.NotificationActivity;
 import com.vlabs.androiweartest.activity.showMore.ShowMoreActivity;
 import com.vlabs.androiweartest.events.data.OnStations;
-import com.vlabs.androiweartest.events.message.OnFeedback;
-import com.vlabs.androiweartest.events.message.OnPlayerAction;
-import com.vlabs.androiweartest.events.message.OnPlayerState;
-import com.vlabs.wearcontract.Data;
-import com.vlabs.wearcontract.Message;
-import com.vlabs.wearmanagers.message.MessageManager;
+import com.vlabs.wearcontract.WearMessage;
+import com.vlabs.wearcontract.WearDataEvent;
+import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
 
 import java.util.List;
 
@@ -31,9 +29,6 @@ import de.greenrobot.event.EventBus;
 public class WearListenerService extends WearableListenerService {
 
     private static final int NOTIFICATION_ID = 1;
-
-    @Inject
-    MessageManager mMessageManager;
 
     @Inject
     EventBus mEventBus;
@@ -65,7 +60,8 @@ public class WearListenerService extends WearableListenerService {
     }
 
     private Bitmap defaultBackground() {
-        return Bitmap.createBitmap(new int[]{getResources().getColor(R.color.notification_background)}, 1, 1, Bitmap.Config.ARGB_8888);
+        final int color = ContextCompat.getColor(this, R.color.notification_background);
+        return Bitmap.createBitmap(new int[]{color}, 1, 1, Bitmap.Config.ARGB_8888);
     }
 
     @Override
@@ -78,25 +74,16 @@ public class WearListenerService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         final String path = messageEvent.getPath();
 
-        postNotificationActivity();
-
-        final Object event;
-        switch (path) {
-            case Message.PATH_STATE:
-                event = OnPlayerState.fromMessageEvent(messageEvent);
+        Object event = null;
+        for (WearMessage wearMessage : WearMessage.values()) {
+            if (wearMessage.path().equals(path)) {
+                event = wearMessage.toDomain(DataMap.fromByteArray(messageEvent.getData()));
                 break;
-            case Message.PATH_CONTROL:
-                event = OnPlayerAction.fromMessageEvent(messageEvent);
-                break;
-            case Message.PATH_FEEDBACK:
-                event = OnFeedback.fromMessageEvent(messageEvent);
-                break;
-            default:
-                Log.d(WearListenerService.class.getSimpleName(), "unknown message: " + path);
-                event = null;
+            }
         }
-
         postIfNotNull(event);
+
+        postNotificationActivity();
     }
 
     @Override
@@ -110,17 +97,32 @@ public class WearListenerService extends WearableListenerService {
             final Object eventBusEvent;
 
             switch (path) {
-                case Data.PATH_STATIONS_MY_STATIONS:
-                case Data.PATH_STATIONS_FOR_YOU:
-                case Data.PATH_STATIONS_SEARCH:
+                case WearDataEvent.PATH_STATIONS_MY_STATIONS:
+                case WearDataEvent.PATH_STATIONS_FOR_YOU:
+                case WearDataEvent.PATH_STATIONS_SEARCH:
                     eventBusEvent = OnStations.fromDataEvent(event, path);
                     break;
                 default:
-                    eventBusEvent = null;
-            }
+                    if (isAssetEvent(event)) {
+                        eventBusEvent = new AssetLoadedEvent(event);
+                    } else {
+                        eventBusEvent = null;
+                    }
+                }
 
-            postIfNotNull(eventBusEvent);
+                postIfNotNull(eventBusEvent);
+            }
         }
+
+    private boolean isAssetEvent(final DataEvent event) {
+        if (event.getType() == DataEvent.TYPE_CHANGED) {
+            byte[] bytes = event.getDataItem().getData();
+            if (bytes.length > 0) {
+                final DataMap dataMap = DataMap.fromByteArray(bytes);
+                return dataMap.containsKey(AssetLoadedEvent.KEY_IMAGE_ASSET);
+            }
+        }
+        return false;
     }
 
     private void postIfNotNull(final Object event) {

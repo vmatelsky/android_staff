@@ -2,34 +2,38 @@ package com.vlabs.androiweartest.images;
 
 import android.graphics.Bitmap;
 
+import com.vlabs.androiweartest.events.data.OnImageLoaded;
 import com.vlabs.wearmanagers.Receiver;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 
+import de.greenrobot.event.EventBus;
 
-public class ImageManager implements ConnectionManager.ImageListener {
+public class ImageManager {
 
     private final ImageCache mImageCache = new ImageCache();
     private final ImageLoader mImageLoader;
 
-    public ImageManager(final ImageLoader imageLoader) {
+    public ImageManager(
+            final ImageLoader imageLoader,
+            final EventBus eventBus) {
         mImageLoader = imageLoader;
+        eventBus.register(this);
     }
 
-    public void requestImage(final String imagePath, final Receiver<Bitmap> receiver) {
+    public void requestImage(final String imagePath, Receiver<Bitmap> ifCached) {
+        if (imagePath == null) return;
+
         final Bitmap fromCache = mImageCache.getBitmapFromMemCache(imagePath);
 
         if (fromCache != null) {
-            receiver.receive(fromCache);
+            ifCached.receive(fromCache);
         }
 
-        mImageLoader.imageByPath(imagePath, bitmap -> {
-            onImage(imagePath, bitmap);
-            receiver.receive(bitmap);
-        });
+        mImageLoader.imageByPath(imagePath);
     }
 
-    @Override
-    public void onImage(final String path, final Bitmap bitmap) {
-        mImageCache.addBitmapToMemoryCache(path, bitmap);
+    @SuppressWarnings("unused")
+    public void onEventBackgroundThread(OnImageLoaded event) {
+        mImageCache.addBitmapToMemoryCache(event.path(), event.image());
     }
+
 }

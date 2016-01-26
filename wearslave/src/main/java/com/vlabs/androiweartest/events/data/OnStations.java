@@ -4,8 +4,9 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataMap;
-import com.vlabs.androiweartest.helpers.WearStationsParser;
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.dataevent.EventType;
+import com.vlabs.wearcontract.helpers.WearStationsParser;
 
 import java.util.List;
 

@@ -6,16 +6,16 @@ import android.widget.Toast;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
-import com.vlabs.androiweartest.events.data.EventType;
 import com.vlabs.androiweartest.events.data.OnStations;
-import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.wearcontract.Data;
-import com.vlabs.wearcontract.Message;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
+import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearExtras;
+import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearcontract.dataevent.EventType;
+import com.vlabs.wearcontract.messages.SearchMessage;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
@@ -76,8 +76,8 @@ public class SearchActivity extends BaseActivity {
 
     private void searchFor(final String term) {
         mConnectionManager.broadcastMessage(
-                Message.PATH_SEARCH,
-                new DataMapBuilder().putString(Message.KEY_SEARCH_TERM, term).getMap());
+                WearMessage.SEARCH,
+                new SearchMessage(term).asDataMap());
     }
 
     private boolean wasLaunchedWithQuery() {
@@ -92,7 +92,7 @@ public class SearchActivity extends BaseActivity {
     public void onEventMainThread(OnStations event) {
         if (isFinishing()) return;
 
-        if (event.path().equals(Data.PATH_STATIONS_SEARCH)) {
+        if (event.path().equals(WearDataEvent.PATH_STATIONS_SEARCH)) {
 
             if (event.eventType() != EventType.CHANGED) {
                 return;
@@ -106,7 +106,7 @@ public class SearchActivity extends BaseActivity {
             }
 
             final Intent intent = new Intent(SearchActivity.this, PlayStationActivity.class);
-            intent.putExtra(WearExtras.EXTRA_STATION_LIST_PATH, Data.PATH_STATIONS_SEARCH);
+            intent.putExtra(WearExtras.EXTRA_STATION_LIST_PATH, WearDataEvent.PATH_STATIONS_SEARCH);
             intent.putExtra(WearExtras.EXTRA_TITLE, getString(R.string.search_result_title));
             startActivity(intent);
             finish();

@@ -13,11 +13,11 @@ import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;

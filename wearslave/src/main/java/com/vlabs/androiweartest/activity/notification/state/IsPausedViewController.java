@@ -8,7 +8,7 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearcontract.Data;
+import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearStation;
 
@@ -51,7 +51,7 @@ public class IsPausedViewController implements View.OnClickListener {
     @Override
     public void onClick(final View v) {
         if (mStation != null) {
-            mPlayerManager.playStation(mStation, PlayedFromUtils.getWearPlayedFrom(mStation, Data.PATH_STATIONS_RECENT));
+            mPlayerManager.playStation(mStation, PlayedFromUtils.getWearPlayedFrom(mStation, WearDataEvent.PATH_STATIONS_RECENT));
             tagPlay();
         }
     }

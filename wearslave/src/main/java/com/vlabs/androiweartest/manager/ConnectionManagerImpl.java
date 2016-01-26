@@ -1,8 +1,9 @@
-package com.vlabs.wearmanagers.connection;
+package com.vlabs.androiweartest.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,19 +12,24 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Asset;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.vlabs.wearmanagers.WearUtils;
+import com.vlabs.androiweartest.events.data.OnImageLoaded;
+import com.vlabs.wearcontract.WearMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -37,8 +43,11 @@ public class ConnectionManagerImpl implements
 
     private GoogleApiClient mGoogleApiClient;
     private PublishSubject<Void> mOnConnected = PublishSubject.create();
+    private EventBus mEventBus;
 
-    public ConnectionManagerImpl(final Context context) {
+    public ConnectionManagerImpl(final Context context, final EventBus eventBus) {
+        mEventBus = eventBus;
+
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -91,25 +100,21 @@ public class ConnectionManagerImpl implements
     }
 
     @Override
-    public void broadcastMessage(final String path, final DataMap map) {
-        connectedNodes().setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(final NodeApi.GetConnectedNodesResult result) {
-                for(Node node : result.getNodes()) {
-                    Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), path, map.toByteArray());
-                }
+    public void broadcastMessage(final WearMessage message, final DataMap map) {
+        connectedNodes().setResultCallback(result -> {
+            for(Node node : result.getNodes()) {
+                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), message.path(), map.toByteArray());
             }
         });
     }
 
     @Override
-    public void getAssetAsBitmap(final String path, final Asset asset, final ImageListener onImageReady) {
+    public void getAssetAsBitmap(final String path, final Asset asset) {
         if (asset == null) {
             throw new IllegalArgumentException("Asset can't be null");
         }
 
         if (!isConnected()) {
-            onImageReady.onImage(path, null);
             Log.d(TAG, "Not connected, returning null image.");
             return;
         }
@@ -137,22 +142,17 @@ public class ConnectionManagerImpl implements
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 super.onPostExecute(bitmap);
-                onImageReady.onImage(path, bitmap);
+                mEventBus.post(new OnImageLoaded(path, bitmap));
             }
         }.execute(asset);
     }
 
+    @Override
     public void getDataItems(final String path, final DataListener onDataReady) {
         if (isConnected()) {
-            WearUtils.getDataItems(mGoogleApiClient, path, new DataListener() {
-                @Override
-                public void onData(String path, DataMap dataMap) {
-                    onDataReady.onData(path, dataMap);
-                }
-            });
-        }
-        else {
-            onDataReady.onData(path, null);
+            getDataItems(mGoogleApiClient, path, onDataReady);
+        } else {
+            throw new RuntimeException("manager is not connected. Unable to get data");
         }
     }
 
@@ -168,5 +168,46 @@ public class ConnectionManagerImpl implements
 
     public PendingResult<NodeApi.GetConnectedNodesResult> connectedNodes() {
         return Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+    }
+
+    public void getDataItems(final GoogleApiClient apiClient, final String path, final DataListener onDataReady) {
+        new AsyncTask<Void, Void, DataMap>() {
+            @Override
+            protected DataMap doInBackground(Void... params) {
+                Node node = getMainNodeSync(apiClient);
+                if (node == null) {
+                    return null;
+                }
+
+                Uri dataUri = dataUriForNode(node).buildUpon().path(path).build();
+                DataApi.DataItemResult dataResult = Wearable.DataApi.getDataItem(apiClient, dataUri).await();
+                DataItem dataItem = dataResult.getDataItem();
+                if (dataItem == null) {
+                    return null;
+                }
+
+                return DataMapItem.fromDataItem(dataItem).getDataMap();
+            }
+
+            @Override
+            protected void onPostExecute(DataMap dataMap) {
+                super.onPostExecute(dataMap);
+                onDataReady.onData(path, dataMap);
+            }
+        }.execute();
+    }
+
+    private static Uri dataUriForNode(Node node) {
+        return new Uri.Builder().scheme(PutDataRequest.WEAR_URI_SCHEME).authority(node.getId()).build();
+    }
+
+    private static Node getMainNodeSync(final GoogleApiClient apiClient) {
+        NodeApi.GetConnectedNodesResult nodeResult = Wearable.NodeApi.getConnectedNodes(apiClient).await();
+        if (nodeResult.getNodes().isEmpty()) {
+            return null;
+        }
+        else {
+            return nodeResult.getNodes().get(0);
+        }
     }
 }

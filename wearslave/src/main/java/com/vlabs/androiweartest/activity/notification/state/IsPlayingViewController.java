@@ -6,9 +6,9 @@ import android.widget.ImageButton;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearcontract.Message;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearPlayerState;
+import com.vlabs.wearcontract.messages.ControlMessage;
 
 public class IsPlayingViewController implements View.OnClickListener {
 
@@ -47,21 +47,21 @@ public class IsPlayingViewController implements View.OnClickListener {
 
     @Override
     public void onClick(final View v) {
-        String command = null;
+        ControlMessage.ControlAction command = null;
         WearAnalyticsConstants.WearPlayerAction action = null;
 
         if (v == mVolUpButton) {
-            command = Message.CONTROL_ACTION_VOLUME_UP;
+            command = ControlMessage.ControlAction.VOLUME_UP;
             action = WearAnalyticsConstants.WearPlayerAction.VOLUME_UP;
         } else if (v == mVolumeDownButton) {
-            command = Message.CONTROL_ACTION_VOLUME_DOWN;
+            command = ControlMessage.ControlAction.VOLUME_DOWN;
             action = WearAnalyticsConstants.WearPlayerAction.VOLUME_DOWN;
         } else if (v == mThumbUpButton) {
-            command = Message.CONTROL_ACTION_THUMB_UP;
+            command = ControlMessage.ControlAction.THUMB_UP;
             action = WearAnalyticsConstants.WearPlayerAction.THUMB_UP;
             mThumbUpButton.setSelected(true);
         } else if (v == mThumbDownButton) {
-            command = Message.CONTROL_ACTION_THUMB_DOWN;
+            command = ControlMessage.ControlAction.THUMB_DOWN;
             action = WearAnalyticsConstants.WearPlayerAction.THUMB_DOWN;
             mThumbDownButton.setSelected(true);
         }

@@ -1,12 +1,11 @@
-package com.vlabs.wearmanagers.connection;
+package com.vlabs.androiweartest.connection;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.vlabs.wearcontract.WearMessage;
 
 import rx.Observable;
 
@@ -24,7 +23,7 @@ public interface ConnectionManager {
 
     Observable<Void> onConnected();
 
-    void broadcastMessage(String path, DataMap dataMap);
+    void broadcastMessage(WearMessage message, DataMap dataMap);
     void getAssetAsBitmap(String path, final Asset asset, final ImageListener onImageReady);
     void getDataItems(final String path, final DataListener onDataReady);
     void putData(PutDataMapRequest putRequest);

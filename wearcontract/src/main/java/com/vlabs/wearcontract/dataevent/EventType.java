@@ -1,4 +1,4 @@
-package com.vlabs.androiweartest.events.data;
+package com.vlabs.wearcontract.dataevent;
 
 import android.util.Log;
 

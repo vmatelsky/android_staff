@@ -11,12 +11,12 @@ import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.launch.WearMainActivity;
-import com.vlabs.androiweartest.events.message.OnPlayerState;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearcontract.Data;
+import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearcontract.messages.StateMessage;
 
 import java.util.ArrayList;
 
@@ -71,10 +71,10 @@ public class ShowMoreActivity extends BaseActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(OnPlayerState event) {
+    public void onEventMainThread(StateMessage event) {
         if (isFinishing()) return;
 
-        processPlayerState(event.playerState());
+        processPlayerState(event.asPlayerState());
     }
 
     private void processPlayerState(final WearPlayerState playerState) {
@@ -86,12 +86,12 @@ public class ShowMoreActivity extends BaseActivity {
     }
 
     private void switchToIsPausedController() {
-        mConnectionManager.getDataItems(Data.PATH_STATIONS_RECENT, (path, map) -> {
+        mConnectionManager.getDataItems(WearDataEvent.PATH_STATIONS_RECENT, (path, map) -> {
             if (mPlayerManager.isPlaying()) return;
 
             if (map == null) return;
 
-            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(Data.KEY_STATIONS);
+            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
 
             if (stationMapLists.isEmpty()) {
                 setDefaultBackgroundColor();

@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.wearable.Asset;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
-import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.model.ForYouModelWearAdapter;
-import com.vlabs.wearcontract.Data;
-import com.vlabs.wearcontract.Message;
+import com.vlabs.wearcontract.WearMessage;
+import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
+import com.vlabs.wearcontract.messages.FeedbackMessage;
 
 import java.io.ByteArrayOutputStream;
 
@@ -37,18 +34,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendFeedback() {
-        MasterApplication.instance().connectionManager().broadcastMessage(Message.PATH_FEEDBACK, new DataMapBuilder().putString(Message.KEY_MESSAGE, "Test feedback").getMap());
+        MasterApplication.instance().connectionManager().broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage("Test feedback").asDataMap());
     }
 
     private void sendImage() {
         final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test_image_to_send);
         final Asset asset = createAssetFromBitmap(bitmap);
-        final PutDataMapRequest dataMap = PutDataMapRequest.create("/image1234");
+        final AssetLoadedEvent event = new AssetLoadedEvent("/image1234", asset);
 
-        dataMap.getDataMap().putAsset(Data.KEY_IMAGE_ASSET, asset);
-        dataMap.setUrgent();
-
-        MasterApplication.instance().connectionManager().putData(dataMap);
+        MasterApplication.instance().connectionManager().putData(event.asDataMapRequest());
     }
 
     private static Asset createAssetFromBitmap(Bitmap bitmap) {

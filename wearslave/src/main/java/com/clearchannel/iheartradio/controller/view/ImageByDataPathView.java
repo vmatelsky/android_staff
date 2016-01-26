@@ -5,32 +5,25 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.google.android.gms.wearable.Asset;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.WearApplication;
-import com.vlabs.wearcontract.Data;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
-import com.vlabs.wearmanagers.message.MessageManager;
+import com.vlabs.androiweartest.events.data.OnImageLoaded;
+import com.vlabs.androiweartest.images.ImageManager;
 
 import java.util.Objects;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.functions.Action1;
+import de.greenrobot.event.EventBus;
 
-public class ImageByDataPathView extends ImageView implements Action1<DataEvent>, ConnectionManager.ImageListener, ConnectionManager.DataListener {
-
-    @Inject
-    ConnectionManager mConnectionManager;
+public class ImageByDataPathView extends ImageView {
 
     @Inject
-    MessageManager mMessageManager;
+    ImageManager mImageManager;
+
+    @Inject
+    EventBus mEventBus;
 
     private String mPath;
-    private Subscription mCurrentSubscription;
-    private Subscription mOnConnectedSubscription;
 
     public ImageByDataPathView(Context context) {
         super(context);
@@ -50,10 +43,6 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
     public void setImagePath(final String newPath) {
         if (Objects.equals(newPath, mPath)) return;
 
-        if (mCurrentSubscription != null) {
-            mCurrentSubscription.unsubscribe();
-        }
-
         mPath = newPath;
         getImage();
     }
@@ -61,74 +50,30 @@ public class ImageByDataPathView extends ImageView implements Action1<DataEvent>
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mPath == null) return;
-        mCurrentSubscription = subscribeOnceByPath(mCurrentSubscription, mPath);
-
-        if (mConnectionManager.isConnected()) {
-            getImage();
-        } else {
-            mOnConnectedSubscription = mConnectionManager.onConnected().subscribe(aVoid -> {
-                getImage();
-            });
-        }
-
+        mEventBus.register(this);
+        getImage();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
-        mCurrentSubscription = getUnsubscribed(mCurrentSubscription);
-        mOnConnectedSubscription = getUnsubscribed(mOnConnectedSubscription);
-    }
-
-    public Subscription getUnsubscribed(Subscription subscription) {
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
-        return null;
+        mEventBus.unregister(this);
     }
 
     private void getImage() {
-        if (mPath == null) {
-            setImageBitmap(null);
-        } else {
-            mCurrentSubscription = subscribeOnceByPath(mCurrentSubscription, mPath);
-            mConnectionManager.getDataItems(mPath, this);
+        mImageManager.requestImage(mPath, this::processBitmap);
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(final OnImageLoaded event) {
+        if (isAttachedToWindow()) {
+            if (event.path().equals(mPath)) {
+                processBitmap(event.image());
+            }
         }
     }
 
-    private Subscription subscribeOnceByPath(final Subscription currentSubscription, final String path) {
-        if (currentSubscription == null || currentSubscription.isUnsubscribed()) {
-            return mMessageManager.onDataByPath(path).subscribe(this);
-        }
-        return currentSubscription;
-    }
-
-    @Override
-    public void call(final DataEvent dataEvent) {
-        if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
-            final DataMap dataMap = DataMap.fromByteArray(dataEvent.getDataItem().getData());
-            handleDataMap(dataMap);
-        } else {
-            setImageBitmap(null);
-        }
-    }
-
-    @Override
-    public void onImage(final String path, final Bitmap bitmap) {
+    private void processBitmap(final Bitmap bitmap) {
         setImageBitmap(bitmap);
-    }
-
-    @Override
-    public void onData(final String path, final DataMap map) {
-        handleDataMap(map);
-    }
-
-    private void handleDataMap(final DataMap map) {
-        if (map == null) return;
-
-        final Asset asset = map.getAsset(Data.KEY_IMAGE_ASSET);
-        mConnectionManager.getAssetAsBitmap(mPath, asset, this);
     }
 }

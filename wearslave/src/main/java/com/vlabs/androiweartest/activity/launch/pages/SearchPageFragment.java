@@ -14,9 +14,9 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseFragment;
 import com.vlabs.androiweartest.activity.search.SearchActivity;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 
 import java.util.ArrayList;
 
@@ -26,12 +26,8 @@ public class SearchPageFragment extends BaseFragment {
 
     private static final int REQUEST_SPEECH = 1;
 
-    public static SearchPageFragment newInstance(final String extraStationPath) {
-        final Bundle bundle = new Bundle();
-        bundle.putString(WearExtras.EXTRA_STATION_PATH, extraStationPath);
-        final SearchPageFragment fragment = new SearchPageFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static SearchPageFragment newInstance() {
+        return new SearchPageFragment();
     }
 
     @Inject

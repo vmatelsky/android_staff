@@ -7,7 +7,6 @@ import android.support.wearable.view.FragmentGridPagerAdapter;
 import com.vlabs.androiweartest.activity.launch.pages.ForYouPageFragment;
 import com.vlabs.androiweartest.activity.launch.pages.MyStationsFragment;
 import com.vlabs.androiweartest.activity.launch.pages.SearchPageFragment;
-import com.vlabs.wearcontract.Data;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public class WearGridPagerAdapter extends FragmentGridPagerAdapter {
 
     private final List<Fragment> mPages = Arrays.asList(ForYouPageFragment.newInstance(),
-                                                        SearchPageFragment.newInstance(Data.PATH_STATIONS_SEARCH),
+                                                        SearchPageFragment.newInstance(),
                                                         MyStationsFragment.newInstance());
 
     public WearGridPagerAdapter(FragmentManager fm) {

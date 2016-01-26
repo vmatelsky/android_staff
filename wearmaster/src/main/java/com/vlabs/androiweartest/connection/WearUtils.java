@@ -1,4 +1,4 @@
-package com.vlabs.wearmanagers;
+package com.vlabs.androiweartest.connection;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,7 +12,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 
 public class WearUtils {
 

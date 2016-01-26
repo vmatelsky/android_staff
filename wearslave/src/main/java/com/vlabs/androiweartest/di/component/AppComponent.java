@@ -8,8 +8,8 @@ import com.vlabs.androiweartest.di.module.ApplicationModule;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import javax.inject.Singleton;

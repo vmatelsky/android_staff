@@ -6,9 +6,9 @@ import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
+import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.manager.ConnectionManagerImpl;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
-import com.vlabs.wearmanagers.connection.ConnectionManagerImpl;
 import com.vlabs.wearmanagers.message.MessageManager;
 import com.vlabs.wearmanagers.message.MessageManagerImpl;
 
@@ -47,7 +47,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public ConnectionManager connectionManager() {
-        return new ConnectionManagerImpl(mApp);
+        return new ConnectionManagerImpl(mApp, eventBus());
     }
 
     @Provides
@@ -59,13 +59,13 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public PlayerManager playerManager() {
-        return new PlayerManager(connectionManager());
+        return new PlayerManager(connectionManager(), eventBus());
     }
 
     @Provides
     @Singleton
     public ImageManager imageManager() {
-        return new ImageManager(new ImageLoader(mApp.appComponent()));
+        return new ImageManager(new ImageLoader(mApp.appComponent()), eventBus());
     }
 
 }

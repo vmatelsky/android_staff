@@ -14,11 +14,11 @@ import com.vlabs.androiweartest.activity.pick.adapters.AdapterFactory;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.wearcontract.Data;
+import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
+import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
 import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
@@ -124,9 +124,9 @@ public class PickStationActivity extends BaseActivity {
     private ListType getListType() {
         final String path = getIntent().getStringExtra(WearExtras.EXTRA_STATION_LIST_PATH);
 
-        if (Data.PATH_STATIONS_FOR_YOU.equals(path)) {
+        if (WearDataEvent.PATH_STATIONS_FOR_YOU.equals(path)) {
             return ListType.FOR_YOU;
-        } else if (Data.PATH_STATIONS_MY_STATIONS.equals(path)) {
+        } else if (WearDataEvent.PATH_STATIONS_MY_STATIONS.equals(path)) {
             return ListType.MY_STATIONS;
         } else {
             return null;

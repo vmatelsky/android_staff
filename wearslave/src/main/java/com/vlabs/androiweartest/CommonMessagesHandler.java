@@ -3,7 +3,7 @@ package com.vlabs.androiweartest;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.vlabs.androiweartest.events.message.OnFeedback;
+import com.vlabs.wearcontract.messages.FeedbackMessage;
 
 import de.greenrobot.event.EventBus;
 
@@ -24,7 +24,7 @@ public class CommonMessagesHandler {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(OnFeedback event) {
-        Toast.makeText(mContext, event.message(), Toast.LENGTH_LONG).show();
+    public void onEventMainThread(FeedbackMessage event) {
+        Toast.makeText(mContext, event.feedback(), Toast.LENGTH_LONG).show();
     }
 }

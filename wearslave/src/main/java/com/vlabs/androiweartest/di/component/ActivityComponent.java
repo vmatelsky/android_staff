@@ -1,5 +1,6 @@
 package com.vlabs.androiweartest.di.component;
 
+import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.activity.notification.NotificationActivity;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
 import com.vlabs.androiweartest.activity.pick.adapters.items.StationListItemEntity;
@@ -25,4 +26,6 @@ public interface ActivityComponent extends AppComponent {
     void inject(NotificationActivity notificationActivity);
 
     void inject(ShowMoreActivity showMoreActivity);
+
+    void inject(WearMainActivity wearMainActivity);
 }

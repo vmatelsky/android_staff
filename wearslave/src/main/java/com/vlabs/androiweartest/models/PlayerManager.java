@@ -2,42 +2,42 @@ package com.vlabs.androiweartest.models;
 
 import android.util.Log;
 
-import com.google.android.gms.wearable.DataMap;
-import com.vlabs.DataMapBuilder;
 import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
-import com.vlabs.wearcontract.Message;
+import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.connection.ConnectionManager;
+import com.vlabs.wearcontract.messages.ControlMessage;
+import com.vlabs.wearcontract.messages.StateMessage;
+
+import de.greenrobot.event.EventBus;
 
 public class PlayerManager {
 
     private static final String TAG = PlayerManager.class.getSimpleName();
+
     private final ConnectionManager mConnectionManager;
 
-    public PlayerManager(final ConnectionManager connectionManager) {
+    public PlayerManager(
+            final ConnectionManager connectionManager,
+            final EventBus eventBus) {
         mConnectionManager = connectionManager;
+        eventBus.register(this);
     }
 
     private WearPlayerState mCurrentState = new WearPlayerState();
 
-    public void onPlayerState(final DataMap map) {
-        final WearPlayerState newState = new WearPlayerState(map);
-        Log.d(TAG, "onPlayerState: " + newState);
-        mCurrentState = newState;
-    }
-
     public void playStation(final WearStation station, final WearAnalyticsConstants.WearPlayedFrom playedFrom) {
         Log.d(TAG, "Sending control message to play station: " + station);
-        mConnectionManager.broadcastMessage(Message.PATH_PLAY_STATION, new PlayStationData(station, playedFrom).toMap());
+        mConnectionManager.broadcastMessage(WearMessage.PLAY_STATION, new PlayStationData(station, playedFrom).toMap());
     }
 
     public void play() {
-        sendControlCommand(Message.CONTROL_ACTION_PLAY);
+        sendControlCommand(ControlMessage.ControlAction.PLAY);
     }
 
     public void stop() {
-        sendControlCommand(Message.CONTROL_ACTION_STOP);
+        sendControlCommand(ControlMessage.ControlAction.STOP);
     }
 
     public boolean isPlaying() {
@@ -48,10 +48,14 @@ public class PlayerManager {
         return mCurrentState;
     }
 
-    public void sendControlCommand(final String command) {
+    public void sendControlCommand(final ControlMessage.ControlAction command) {
         Log.d(TAG, "Sending control message: " + command);
-        mConnectionManager.broadcastMessage(Message.PATH_CONTROL, new DataMapBuilder()
-                .putString(Message.KEY_ACTION, command)
-                .getMap());
+        mConnectionManager.broadcastMessage(WearMessage.CONTROL, new ControlMessage(command).asDataMap());
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(final StateMessage event) {
+        Log.d(TAG, "onPlayerState: " + event);
+        mCurrentState = event.asPlayerState();
     }
 }

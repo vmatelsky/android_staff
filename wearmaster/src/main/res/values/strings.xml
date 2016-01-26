@@ -4,4 +4,8 @@
     <string name="shuffle_my_stations">Shuffle my stations</string>
     <string name="send_image">Send image</string>
     <string name="send_feedback">Feedback</string>
+    <string name="title_activity_player">PlayerActivity</string>
+    <string name="toggle_play">Toggle Play</string>
+    <string name="thumb_up">Thumb up</string>
+    <string name="thumb_down">Thumb down</string>
 </resources>
