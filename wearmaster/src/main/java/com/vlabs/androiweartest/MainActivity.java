@@ -11,11 +11,17 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.vlabs.androiweartest.model.ForYouModelWearAdapter;
 import com.vlabs.androiweartest.model.MyStationsWearAdapter;
+import com.vlabs.androiweartest.wear.managers.RecentlyPlayedManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearMessage;
+import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.wearcontract.messages.FeedbackMessage;
 
 import java.io.ByteArrayOutputStream;
+
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +43,15 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.send_feedback).setOnClickListener(v -> sendFeedback());
 
+        findViewById(R.id.send_recently_played).setOnClickListener(v -> sendRecentlyPlayed());
+
         findViewById(R.id.open_player).setOnClickListener(v -> openPlayer());
+    }
+
+    private void sendRecentlyPlayed() {
+        PublishSubject<WearStation> observable = PublishSubject.create();
+        RecentlyPlayedManager manager = new RecentlyPlayedManager(observable);
+        observable.onNext(DummyWearStation.Dummy2);
     }
 
     private void openPlayer() {
@@ -46,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendFeedback() {
-        MasterApplication.instance().connectionManager().broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage("Test feedback").asDataMap());
+        MasterApplication.instance().wearFacade().connectionManager().broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage("Test feedback").asDataMap());
     }
 
     private void sendImage() {
@@ -57,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         dataMap.getDataMap().putAsset(WearDataEvent.KEY_IMAGE_ASSET, asset);
         dataMap.getDataMap().putString(WearDataEvent.KEY_IMAGE_PATH, "/image1234");
         PutDataRequest request = dataMap.asPutDataRequest();
-        MasterApplication.instance().connectionManager().putData(request);
+        MasterApplication.instance().wearFacade().connectionManager().putData(request);
     }
 
     private static Asset createAssetFromBitmap(Bitmap bitmap) {

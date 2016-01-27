@@ -2,12 +2,11 @@ package com.vlabs.androiweartest;
 
 import android.util.Log;
 
-import com.google.android.gms.common.data.FreezableUtils;
-import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
+import com.vlabs.androiweartest.wear.WearFacade;
 
 import java.util.List;
 
@@ -15,21 +14,24 @@ public class MasterListenerService extends WearableListenerService {
 
     public static final String TAG = MainActivity.TAG;
 
+    private WearFacade mFacade;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mFacade = MasterApplication.instance().wearFacade();
+    }
+
     @Override
     public void onMessageReceived(final MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        Log.d(TAG, "onMessageReceived: " + messageEvent.getPath());
-        MasterApplication.instance().messageManager().handleMessage(messageEvent);
+        mFacade.handleMessageEvent(messageEvent);
     }
 
     @Override
     public void onDataChanged(final DataEventBuffer dataEvents) {
         super.onDataChanged(dataEvents);
-
-        final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
-        for (DataEvent event : events) {
-            MasterApplication.instance().messageManager().handleData(event);
-        }
+        mFacade.handleDataEvents(dataEvents);
     }
 
     @Override

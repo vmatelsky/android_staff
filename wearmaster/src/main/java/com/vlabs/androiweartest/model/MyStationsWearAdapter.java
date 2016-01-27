@@ -17,11 +17,11 @@ public class MyStationsWearAdapter {
     private final static String sPath = WearDataEvent.PATH_STATIONS_MY_STATIONS;
 
     private final List<WearStation> mLastObtainedStations;
-    private ConnectionManager mConnectionManager;
+    private final ConnectionManager mConnectionManager;
 
     public MyStationsWearAdapter() {
-        mConnectionManager = MasterApplication.instance().connectionManager();
         mLastObtainedStations = DummyWearStation.Dummies;
+        mConnectionManager = MasterApplication.instance().wearFacade().connectionManager();
     }
 
     public void refresh() {

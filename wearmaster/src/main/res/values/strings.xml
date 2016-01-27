@@ -9,4 +9,5 @@
     <string name="thumb_up">Thumb up</string>
     <string name="thumb_down">Thumb down</string>
     <string name="open_player">Open Player</string>
+    <string name="send_recently_played">Send Recently Played</string>
 </resources>

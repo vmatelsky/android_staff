@@ -40,6 +40,13 @@
         android:text="@string/send_feedback" />
 
     <Button
+        android:id="@+id/send_recently_played"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="@string/send_recently_played" />
+
+    <Button
         android:id="@+id/open_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

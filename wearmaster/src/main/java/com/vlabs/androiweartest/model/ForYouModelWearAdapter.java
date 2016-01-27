@@ -21,7 +21,7 @@ public class ForYouModelWearAdapter {
     private ConnectionManager mConnectionManager;
 
     public ForYouModelWearAdapter() {
-        mConnectionManager = MasterApplication.instance().connectionManager();
+        mConnectionManager = MasterApplication.instance().wearFacade().connectionManager();
         mLastObtainedStations = DummyWearStation.Dummies;
     }
 
