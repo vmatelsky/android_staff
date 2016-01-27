@@ -31,7 +31,6 @@ public class MessageManagerImpl implements MessageManager {
         final String path = messageEvent.getPath();
         final PublishSubject<MessageEvent> observable = observableByPath(path, mOnMessageByPath);
         observable.onNext(messageEvent);
-//        final DataMap dataMap = DataMap.fromByteArray(messageEvent.getData());
     }
 
     @Override

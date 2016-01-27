@@ -1,5 +1,6 @@
 package com.vlabs.androiweartest.behavior;
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 
@@ -18,37 +19,53 @@ import de.greenrobot.event.EventBus;
 
 public class ChangeBackgroundBehavior {
 
-    private final EventBus mEventBus;
+    private final Context mContext;
     private final ConnectionManager mConnectionManager;
-    private ImageByDataPathView mImage;
+
+    private final ArrayList<ImageByDataPathView> mActiveImages = new ArrayList<>();
 
     private boolean mLastIsPlayedState = false;
+    private String mLastImagePath = null;
 
-    public ChangeBackgroundBehavior(final EventBus eventBus, final ConnectionManager connectionManager) {
-        mEventBus = eventBus;
+    public ChangeBackgroundBehavior(
+            final Context context,
+            final EventBus eventBus,
+            final ConnectionManager connectionManager) {
+        mContext = context;
         mConnectionManager = connectionManager;
+        eventBus.register(this);
     }
 
-    public void activate(final ImageByDataPathView image) {
-        mImage = image;
-        mEventBus.register(this);
+    public void activateFor(final ImageByDataPathView image) {
+        image.setImagePath(mLastImagePath);
+
+        if (!mActiveImages.contains(image)) {
+            mActiveImages.add(image);
+        }
+
     }
 
-    public void deactivate() {
-        mEventBus.unregister(this);
-        mImage = null;
+    public void deactivateFor(final ImageByDataPathView image) {
+        mActiveImages.remove(image);
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(final StateMessage event) {
-        WearPlayerState state = event.asPlayerState();
+        final WearPlayerState state = event.asPlayerState();
 
         mLastIsPlayedState = state.isPlaying();
 
-        if (state.isPlaying()) {
-            mImage.setImagePath(state.getImagePath());
+        if (mLastIsPlayedState) {
+            updateImagePath(state.getImagePath());
         } else {
             setImageFromRecentStations();
+        }
+    }
+
+    private void updateImagePath(final String imagePath) {
+        mLastImagePath = imagePath;
+        for (ImageByDataPathView image : mActiveImages) {
+            image.setImagePath(imagePath);
         }
     }
 
@@ -65,15 +82,18 @@ public class ChangeBackgroundBehavior {
                 setDefaultBackgroundColor();
             } else {
                 final WearStation mostRecentStation = WearStation.fromDataMap(stationMapLists.get(0));
-                mImage.setImagePath(mostRecentStation.getImagePath());
+                updateImagePath(mostRecentStation.getImagePath());
 
             }
         });
     }
 
     private void setDefaultBackgroundColor() {
-        final int color = ContextCompat.getColor(mImage.getContext(), R.color.notification_background);
+        final int color = ContextCompat.getColor(mContext, R.color.notification_background);
         final ColorDrawable colorDrawable = new ColorDrawable(color);
-        mImage.setBackground(colorDrawable);
+
+        for (ImageByDataPathView image : mActiveImages) {
+            image.setBackground(colorDrawable);
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.WearListenerService;
+import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.di.module.ApplicationModule;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
@@ -34,6 +35,8 @@ public interface AppComponent {
     PlayerManager playerManager();
 
     ImageManager imageManager();
+
+    ChangeBackgroundBehavior backgroundBehavior();
 
     void inject(WearListenerService wearListenerService);
 

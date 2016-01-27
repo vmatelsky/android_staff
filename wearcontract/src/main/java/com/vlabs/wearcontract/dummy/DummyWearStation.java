@@ -7,6 +7,12 @@ import java.util.List;
 
 public class DummyWearStation {
 
+    public final static String DUMMY_IMAGE_PATH_1 = "/images/PN-7505082002197876956";
+    public final static String DUMMY_IMAGE_PATH_2 = "/images/PN-4238286328523247710";
+    public final static String DUMMY_IMAGE_PATH_3 = "/images/PN-722682260474432563";
+    public final static String DUMMY_IMAGE_PATH_4 = "/images/PN6882682208816492607";
+    public final static String DUMMY_IMAGE_PATH_5 = "/images/PN7606224893369494086";
+
     public static WearStation Dummy1 = new WearStation(new WearStation.Adapter() {
         @Override
         public String getUniqueId() {
@@ -25,7 +31,7 @@ public class DummyWearStation {
 
         @Override
         public String getImagePath() {
-            return "/images/PN-7505082002197876956";
+            return DUMMY_IMAGE_PATH_1;
         }
 
         @Override
@@ -52,7 +58,7 @@ public class DummyWearStation {
 
         @Override
         public String getImagePath() {
-            return "/images/PN-4238286328523247710";
+            return DUMMY_IMAGE_PATH_2;
         }
 
         @Override
@@ -79,7 +85,7 @@ public class DummyWearStation {
 
         @Override
         public String getImagePath() {
-            return "/images/PN-722682260474432563";
+            return DUMMY_IMAGE_PATH_3;
         }
 
         @Override
@@ -106,7 +112,7 @@ public class DummyWearStation {
 
         @Override
         public String getImagePath() {
-            return "/images/PN6882682208816492607";
+            return DUMMY_IMAGE_PATH_4;
         }
 
         @Override
@@ -133,7 +139,7 @@ public class DummyWearStation {
 
         @Override
         public String getImagePath() {
-            return "/images/PN7606224893369494086";
+            return DUMMY_IMAGE_PATH_5;
         }
 
         @Override

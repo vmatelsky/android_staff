@@ -1,5 +1,6 @@
 package com.vlabs.androiweartest;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -9,9 +10,9 @@ import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.vlabs.androiweartest.model.ForYouModelWearAdapter;
+import com.vlabs.androiweartest.model.MyStationsWearAdapter;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearMessage;
-import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
 import com.vlabs.wearcontract.messages.FeedbackMessage;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "main-bla-bla";
 
     private ForYouModelWearAdapter mForYouAdapter = new ForYouModelWearAdapter();
+    private MyStationsWearAdapter mMyStationsAdapter = new MyStationsWearAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.send_image).setOnClickListener(v -> sendImage());
 
         findViewById(R.id.send_feedback).setOnClickListener(v -> sendFeedback());
+
+        findViewById(R.id.open_player).setOnClickListener(v -> openPlayer());
+    }
+
+    private void openPlayer() {
+        final Intent intent = new Intent(this, PlayerActivity.class);
+        startActivity(intent);
     }
 
     private void sendFeedback() {
@@ -45,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         final Asset asset = createAssetFromBitmap(bitmap);
 
         PutDataMapRequest dataMap = PutDataMapRequest.create(WearDataEvent.PATH_IMAGE_LOADED);
-        dataMap.getDataMap().putAsset(AssetLoadedEvent.KEY_IMAGE_ASSET, asset);
-        dataMap.getDataMap().putString(AssetLoadedEvent.KEY_IMAGE_PATH, "/image1234");
+        dataMap.getDataMap().putAsset(WearDataEvent.KEY_IMAGE_ASSET, asset);
+        dataMap.getDataMap().putString(WearDataEvent.KEY_IMAGE_PATH, "/image1234");
         PutDataRequest request = dataMap.asPutDataRequest();
         MasterApplication.instance().connectionManager().putData(request);
     }
@@ -62,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void shuffleMyStations() {
-
+        mMyStationsAdapter.refresh();
     }
 
 }

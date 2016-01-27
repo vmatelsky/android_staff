@@ -12,6 +12,7 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.notification.state.IsPausedViewController;
 import com.vlabs.androiweartest.activity.notification.state.IsPlayingViewController;
+import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.models.PlayerManager;
@@ -41,10 +42,13 @@ public class NotificationActivity extends BaseActivity {
     @Inject
     EventBus eventBus;
 
-    private ImageByDataPathView background;
+    private ImageByDataPathView mBackground;
     private View backgroundTint;
     private IsPlayingViewController mIsPlayingController;
     private IsPausedViewController mIsPausedController;
+
+    @Inject
+    ChangeBackgroundBehavior mBackgroundBehavior;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -53,7 +57,7 @@ public class NotificationActivity extends BaseActivity {
 
         getComponent().inject(this);
 
-        background = (ImageByDataPathView) findViewById(R.id.background);
+        mBackground = (ImageByDataPathView) findViewById(R.id.background);
         backgroundTint = findViewById(R.id.background_tint);
 
         mIsPlayingController = new IsPlayingViewController(
@@ -73,13 +77,16 @@ public class NotificationActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         eventBus.register(this);
+        mBackgroundBehavior.activateFor(mBackground);
         processPlayerState(playerManager.currentState());
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         eventBus.unregister(this);
+        mBackgroundBehavior.deactivateFor(mBackground);
     }
 
     @SuppressWarnings("unused")
@@ -92,14 +99,9 @@ public class NotificationActivity extends BaseActivity {
     private void processPlayerState(final WearPlayerState playerState) {
         if (playerState.isPlaying()) {
             switchToIsPlayingController(playerState);
-            setBackgroundImagePath(playerState.getImagePath());
         } else {
-            switchToIsPausedController(playerState);
+            switchToIsPausedController();
         }
-    }
-
-    private void setBackgroundImagePath(final String imagePath) {
-        background.setImagePath(imagePath);
     }
 
     private void switchToIsPlayingController(final WearPlayerState state) {
@@ -109,7 +111,7 @@ public class NotificationActivity extends BaseActivity {
         mIsPausedController.hide();
     }
 
-    private void switchToIsPausedController(final WearPlayerState state) {
+    private void switchToIsPausedController() {
         fadeOut(backgroundTint);
 
         mIsPlayingController.hide();
@@ -126,7 +128,6 @@ public class NotificationActivity extends BaseActivity {
                 mIsPausedController.show(null);
             } else {
                 final WearStation wearStation = WearStation.fromDataMap(stationMapLists.get(0));
-                setBackgroundImagePath(wearStation.getImagePath());
                 mIsPausedController.show(wearStation);
             }
         });
@@ -143,7 +144,7 @@ public class NotificationActivity extends BaseActivity {
     private void setDefaultBackgroundColor() {
         final int color = ContextCompat.getColor(this, R.color.notification_background);
         final ColorDrawable colorDrawable = new ColorDrawable(color);
-        background.setImageDrawable(colorDrawable);
+        mBackground.setImageDrawable(colorDrawable);
     }
 
 }

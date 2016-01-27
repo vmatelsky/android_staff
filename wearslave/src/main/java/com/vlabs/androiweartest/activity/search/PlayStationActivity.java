@@ -36,9 +36,6 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     ConnectionManager mConnectionManager;
 
     @Inject
-    MessageManager mMessageManager;
-
-    @Inject
     Analytics mAnalytics;
 
     @Inject

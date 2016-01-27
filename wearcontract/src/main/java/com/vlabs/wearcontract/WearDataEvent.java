@@ -9,4 +9,6 @@ public interface WearDataEvent {
     String PATH_IMAGE_LOADED = "/image_loaded";
 
     String KEY_STATIONS = "stations";
+    String KEY_IMAGE_ASSET = "image-asset";
+    String KEY_IMAGE_PATH = "image-path";
 }

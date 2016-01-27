@@ -22,7 +22,9 @@ public class WearMainActivity extends BaseActivity {
     @Inject
     ConnectionManager connectionManager;
 
-    private ChangeBackgroundBehavior mBackgroundBehavior;
+    @Inject
+    ChangeBackgroundBehavior mBackgroundBehavior;
+
     private ImageByDataPathView mBackgroundImage;
 
     @Override
@@ -39,22 +41,18 @@ public class WearMainActivity extends BaseActivity {
         DotsPageIndicator dotsIndicator = (DotsPageIndicator)findViewById(R.id.page_indicator);
         dotsIndicator.setPager(pager);
 
-        final ImageByDataPathView background = (ImageByDataPathView) findViewById(R.id.background);
-        background.setImagePath("/image1234");
-
-//        mBackgroundImage = (ImageByDataPathView) findViewById(R.id.background);
-//        mBackgroundBehavior = new ChangeBackgroundBehavior(eventBus, connectionManager);
+        mBackgroundImage = (ImageByDataPathView) findViewById(R.id.background);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        mBackgroundBehavior.activate(mBackgroundImage);
+        mBackgroundBehavior.activateFor(mBackgroundImage);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-  //      mBackgroundBehavior.deactivate();
+        mBackgroundBehavior.deactivateFor(mBackgroundImage);
     }
 }

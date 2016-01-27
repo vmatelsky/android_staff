@@ -19,7 +19,6 @@ import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 
@@ -43,9 +42,6 @@ public class PickStationActivity extends BaseActivity {
 
     @Inject
     Analytics mAnalytics;
-
-    @Inject
-    MessageManager mMessageManager;
 
     @Inject
     ConnectionManager mConnectionManager;

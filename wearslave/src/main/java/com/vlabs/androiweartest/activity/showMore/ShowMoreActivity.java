@@ -71,7 +71,7 @@ public class ShowMoreActivity extends BaseActivity {
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(StateMessage event) {
+    public void onEventMainThread(final StateMessage event) {
         if (isFinishing()) return;
 
         processPlayerState(event.asPlayerState());

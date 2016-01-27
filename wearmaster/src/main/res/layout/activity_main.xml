@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -14,35 +15,35 @@
         android:id="@+id/shuffle_my_stations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/shuffle_my_stations"
-        android:layout_centerInParent="true"/>
+
+        android:text="@string/shuffle_my_stations" />
 
     <Button
         android:id="@+id/shuffle_for_you"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shuffle_my_stations"
-        android:text="@string/shuffle_for_you"
-        android:layout_centerInParent="true"/>
+
+        android:text="@string/shuffle_for_you" />
 
     <Button
         android:id="@+id/send_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shuffle_for_you"
-        android:text="@string/send_image"
-        android:layout_centerInParent="true"/>
+
+        android:text="@string/send_image" />
 
     <Button
         android:id="@+id/send_feedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/send_image"
-        android:text="@string/send_feedback"
-        android:layout_centerInParent="true"/>
 
-    <TextView
+        android:text="@string/send_feedback" />
+
+    <Button
+        android:id="@+id/open_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-</RelativeLayout>
+
+        android:text="@string/open_player" />
+
+</LinearLayout>

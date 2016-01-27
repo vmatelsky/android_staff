@@ -10,12 +10,11 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
-import com.vlabs.wearcontract.WearDataEvent;
-import com.vlabs.wearcontract.WearMessage;
-import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
-import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.androiweartest.connection.ConnectionManager;
 import com.vlabs.androiweartest.connection.ConnectionManagerImpl;
+import com.vlabs.wearcontract.WearDataEvent;
+import com.vlabs.wearcontract.WearMessage;
+import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.wearcontract.messages.LoadImageMessage;
 import com.vlabs.wearcontract.messages.SearchMessage;
 import com.vlabs.wearmanagers.message.MessageManager;
@@ -93,8 +92,8 @@ public class MasterApplication extends Application {
         final Asset asset = createAssetFromBitmap(bitmap);
 
         final PutDataMapRequest dataMap = PutDataMapRequest.create(WearDataEvent.PATH_IMAGE_LOADED);
-        dataMap.getDataMap().putAsset(AssetLoadedEvent.KEY_IMAGE_ASSET, asset);
-        dataMap.getDataMap().putString(AssetLoadedEvent.KEY_IMAGE_PATH, path);
+        dataMap.getDataMap().putAsset(WearDataEvent.KEY_IMAGE_ASSET, asset);
+        dataMap.getDataMap().putString(WearDataEvent.KEY_IMAGE_PATH, path);
         final PutDataRequest request = dataMap.asPutDataRequest();
         MasterApplication.instance().connectionManager().putData(request);
     }

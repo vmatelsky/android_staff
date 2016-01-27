@@ -33,9 +33,6 @@ public class SearchActivity extends BaseActivity {
     ConnectionManager mConnectionManager;
 
     @Inject
-    MessageManager mMessageManager;
-
-    @Inject
     EventBus mEventBus;
 
     @Override

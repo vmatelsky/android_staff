@@ -3,6 +3,7 @@ package com.vlabs.androiweartest.di.module;
 import android.content.Context;
 
 import com.vlabs.androiweartest.WearApplication;
+import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
@@ -22,13 +23,16 @@ import de.greenrobot.event.EventBus;
 public class ApplicationModule {
     private final WearApplication mApp;
     private final EventBus mEventBus = new EventBus();
-    private final ImageLoader mImageLoader;
     private final ImageManager mImageManager;
+    private final PlayerManager mPlayerManager;
+    private final ChangeBackgroundBehavior mBackgroundBehavior;
 
     public ApplicationModule(final WearApplication app) {
         mApp = app;
-        mImageLoader = new ImageLoader(connectionManager(), mEventBus);
-        mImageManager = new ImageManager(mImageLoader, mEventBus);
+        final ImageLoader imageLoader = new ImageLoader(connectionManager(), mEventBus);
+        mImageManager = new ImageManager(imageLoader, mEventBus);
+        mPlayerManager = new PlayerManager(connectionManager(), mEventBus);
+        mBackgroundBehavior = new ChangeBackgroundBehavior(app, mEventBus, connectionManager());
     }
 
     @Provides
@@ -64,13 +68,19 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public PlayerManager playerManager() {
-        return new PlayerManager(connectionManager(), eventBus());
+        return mPlayerManager;
     }
 
     @Provides
     @Singleton
     public ImageManager imageManager() {
         return mImageManager;
+    }
+
+    @Provides
+    @Singleton
+    public ChangeBackgroundBehavior backgroundBehavior() {
+        return mBackgroundBehavior;
     }
 
 }

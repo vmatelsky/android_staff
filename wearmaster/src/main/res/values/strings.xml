@@ -8,4 +8,5 @@
     <string name="toggle_play">Toggle Play</string>
     <string name="thumb_up">Thumb up</string>
     <string name="thumb_down">Thumb down</string>
+    <string name="open_player">Open Player</string>
 </resources>

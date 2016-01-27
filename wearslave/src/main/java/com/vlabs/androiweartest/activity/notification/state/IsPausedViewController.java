@@ -15,7 +15,6 @@ import com.vlabs.wearcontract.WearStation;
 public class IsPausedViewController implements View.OnClickListener {
 
     private final View mView;
-    private final TextView mStationButton;
     private final TextView mTitleView;
     private final Analytics mAnalytics;
     private final PlayerManager mPlayerManager;
@@ -24,9 +23,9 @@ public class IsPausedViewController implements View.OnClickListener {
 
     public IsPausedViewController(final View view, final Analytics analytics, final PlayerManager playerManager) {
         mView = view;
-        mStationButton = (TextView) view.findViewById(R.id.station_name_button);
+        final TextView stationButton = (TextView) view.findViewById(R.id.station_name_button);
         mTitleView = (TextView) view.findViewById(R.id.title);
-        mStationButton.setOnClickListener(this);
+        stationButton.setOnClickListener(this);
 
         mAnalytics = analytics;
         mPlayerManager = playerManager;

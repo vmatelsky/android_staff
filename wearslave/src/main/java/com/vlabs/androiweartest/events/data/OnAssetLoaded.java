@@ -3,15 +3,15 @@ package com.vlabs.androiweartest.events.data;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataMapItem;
-import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
+import com.vlabs.wearcontract.WearDataEvent;
 
 public class OnAssetLoaded {
 
     public static OnAssetLoaded fromDataEvent(final DataEvent event) {
         if (event.getType() == DataEvent.TYPE_CHANGED) {
             final DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
-            final Asset asset = dataMapItem.getDataMap().getAsset(AssetLoadedEvent.KEY_IMAGE_ASSET);
-            final String assetPath = dataMapItem.getDataMap().getString(AssetLoadedEvent.KEY_IMAGE_PATH);
+            final Asset asset = dataMapItem.getDataMap().getAsset(WearDataEvent.KEY_IMAGE_ASSET);
+            final String assetPath = dataMapItem.getDataMap().getString(WearDataEvent.KEY_IMAGE_PATH);
             return new OnAssetLoaded(assetPath, asset);
         }
 
