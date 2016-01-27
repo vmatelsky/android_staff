@@ -31,7 +31,7 @@ public class LoadImageHandler implements MessageHandler {
     public void handle(final MessageEvent messageEvent) {
         final DataMap map = DataMap.fromByteArray(messageEvent.getData());
         LoadImageMessage loadImageMessage = new LoadImageMessage(map);
-        sendImage(loadImageMessage.imagePath());
+        sendImage(loadImageMessage);
     }
 
     private int imageByPath(final String path) {
@@ -51,13 +51,14 @@ public class LoadImageHandler implements MessageHandler {
         }
     }
 
-    private void sendImage(final String path) {
-        final Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imageByPath(path));
-        final Asset asset = createAssetFromBitmap(bitmap);
+    private void sendImage(final LoadImageMessage message) {
+        final Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imageByPath(message.imagePath()));
+        final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, message.width(), message.height(), false);
+        final Asset asset = createAssetFromBitmap(scaledBitmap);
 
         final PutDataMapRequest dataMap = PutDataMapRequest.create(WearDataEvent.PATH_IMAGE_LOADED);
         dataMap.getDataMap().putAsset(WearDataEvent.KEY_IMAGE_ASSET, asset);
-        dataMap.getDataMap().putString(WearDataEvent.KEY_IMAGE_PATH, path);
+        dataMap.getDataMap().putString(WearDataEvent.KEY_IMAGE_PATH, message.imagePath());
         final PutDataRequest request = dataMap.asPutDataRequest();
         mConnectionManager.putData(request);
     }

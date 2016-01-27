@@ -29,6 +29,14 @@ public class LoadImageMessage {
         return mPath;
     }
 
+    public int width() {
+        return mWindowWidth;
+    }
+
+    public int height() {
+        return mWindowHeight;
+    }
+
     public DataMap asDataMap() {
         return new DataMapBuilder()
                 .putString(KEY_LOAD_IMAGE_KEY, mPath)

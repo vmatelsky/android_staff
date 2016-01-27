@@ -18,7 +18,6 @@ import com.vlabs.androiweartest.models.PlayerManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 

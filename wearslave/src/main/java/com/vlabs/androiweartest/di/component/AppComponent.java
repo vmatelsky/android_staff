@@ -7,11 +7,9 @@ import com.vlabs.androiweartest.WearListenerService;
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.di.module.ApplicationModule;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
 import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearmanagers.message.MessageManager;
 
 import javax.inject.Singleton;
 
@@ -25,8 +23,6 @@ public interface AppComponent {
     Context appContext();
 
     EventBus eventBus();
-
-    MessageManager messageManager();
 
     ConnectionManager connectionManager();
 

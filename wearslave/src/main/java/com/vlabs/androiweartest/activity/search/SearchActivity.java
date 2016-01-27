@@ -16,7 +16,6 @@ import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.dataevent.EventType;
 import com.vlabs.wearcontract.messages.SearchMessage;
-import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.util.List;
 

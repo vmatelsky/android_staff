@@ -10,8 +10,6 @@ import com.vlabs.androiweartest.images.ImageManager;
 import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.manager.ConnectionManagerImpl;
 import com.vlabs.androiweartest.models.PlayerManager;
-import com.vlabs.wearmanagers.message.MessageManager;
-import com.vlabs.wearmanagers.message.MessageManagerImpl;
 
 import javax.inject.Singleton;
 
@@ -45,12 +43,6 @@ public class ApplicationModule {
     @Singleton
     public EventBus eventBus() {
         return mEventBus;
-    }
-
-    @Provides
-    @Singleton
-    public MessageManager messageManager() {
-        return new MessageManagerImpl();
     }
 
     @Provides
