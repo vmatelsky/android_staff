@@ -17,9 +17,9 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.vlabs.wearcontract.WearMessage;
-import com.vlabs.wearmanagers.message.MessageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -158,8 +158,8 @@ public class ConnectionManagerImpl implements
     }
 
     @Override
-    public void putData(final PutDataMapRequest putRequest) {
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest.asPutDataRequest());
+    public void putData(final PutDataRequest putRequest) {
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putRequest);
     }
 
     @Override

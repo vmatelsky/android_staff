@@ -5,11 +5,10 @@ import android.content.res.Resources;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.WearApplication;
-import com.vlabs.androiweartest.di.component.AppComponent;
+import com.vlabs.androiweartest.events.data.OnAssetLoaded;
 import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
-import com.vlabs.wearcontract.dataevent.EventType;
 import com.vlabs.wearcontract.messages.LoadImageMessage;
 
 import javax.inject.Inject;
@@ -28,8 +27,9 @@ public class ImageLoader {
     private final int mWindowHeight;
     private final int mWindowWidth;
 
-    public ImageLoader(final AppComponent appComponent) {
-        appComponent.inject(this);
+    public ImageLoader(final ConnectionManager connectionManager, final EventBus eventBus) {
+        mConnectionManager = connectionManager;
+        mEventBus = eventBus;
         mEventBus.register(this);
 
         final Resources res = WearApplication.instance().getResources();
@@ -84,11 +84,8 @@ public class ImageLoader {
         mConnectionManager.getAssetAsBitmap(path, asset);
     }
 
-
     @SuppressWarnings("unused")
-    public void onEventBackgroundThread(AssetLoadedEvent event) {
-        if (event.eventType() == EventType.CHANGED) {
-            mConnectionManager.getAssetAsBitmap(event.imageKey(), event.asset());
-        }
+    public void onEventBackgroundThread(OnAssetLoaded event) {
+        mConnectionManager.getAssetAsBitmap(event.path(), event.asset());
     }
 }

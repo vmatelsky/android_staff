@@ -9,6 +9,7 @@ import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
@@ -84,14 +85,18 @@ public class MasterApplication extends Application {
         putRequest.getDataMap().putDataMapArrayList(WearDataEvent.KEY_STATIONS, mapArray);
         putRequest.setUrgent();
         MasterApplication.instance().connectionManager().deleteData(putRequest);
-        MasterApplication.instance().connectionManager().putData(putRequest);
+        MasterApplication.instance().connectionManager().putData(putRequest.asPutDataRequest());
     }
 
     private void sendImage(final String path) {
         final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test_image_to_send);
         final Asset asset = createAssetFromBitmap(bitmap);
-        final AssetLoadedEvent event = new AssetLoadedEvent(path, asset);
-        MasterApplication.instance().connectionManager().putData(event.asDataMapRequest());
+
+        final PutDataMapRequest dataMap = PutDataMapRequest.create(WearDataEvent.PATH_IMAGE_LOADED);
+        dataMap.getDataMap().putAsset(AssetLoadedEvent.KEY_IMAGE_ASSET, asset);
+        dataMap.getDataMap().putString(AssetLoadedEvent.KEY_IMAGE_PATH, path);
+        final PutDataRequest request = dataMap.asPutDataRequest();
+        MasterApplication.instance().connectionManager().putData(request);
     }
 
     private static Asset createAssetFromBitmap(Bitmap bitmap) {

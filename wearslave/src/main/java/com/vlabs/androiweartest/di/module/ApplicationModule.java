@@ -21,9 +21,14 @@ import de.greenrobot.event.EventBus;
 @Module
 public class ApplicationModule {
     private final WearApplication mApp;
+    private final EventBus mEventBus = new EventBus();
+    private final ImageLoader mImageLoader;
+    private final ImageManager mImageManager;
 
     public ApplicationModule(final WearApplication app) {
         mApp = app;
+        mImageLoader = new ImageLoader(connectionManager(), mEventBus);
+        mImageManager = new ImageManager(mImageLoader, mEventBus);
     }
 
     @Provides
@@ -35,7 +40,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public EventBus eventBus() {
-        return new EventBus();
+        return mEventBus;
     }
 
     @Provides
@@ -65,7 +70,7 @@ public class ApplicationModule {
     @Provides
     @Singleton
     public ImageManager imageManager() {
-        return new ImageManager(new ImageLoader(mApp.appComponent()), eventBus());
+        return mImageManager;
     }
 
 }

@@ -37,7 +37,5 @@ public interface AppComponent {
 
     void inject(WearListenerService wearListenerService);
 
-    void inject(ImageLoader imageLoader);
-
     void inject(ImageByDataPathView imageByDataPathView);
 }

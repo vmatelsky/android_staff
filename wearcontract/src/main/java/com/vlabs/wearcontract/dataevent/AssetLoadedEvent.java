@@ -8,6 +8,7 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 public class AssetLoadedEvent {
 
     public static final String KEY_IMAGE_ASSET = "image-asset";
+    public static final String KEY_IMAGE_PATH = "image-path";
 
     private final EventType mEventType;
     private final String mImageKey;

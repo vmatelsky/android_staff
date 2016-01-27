@@ -15,10 +15,10 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 import com.vlabs.androiweartest.activity.notification.NotificationActivity;
 import com.vlabs.androiweartest.activity.showMore.ShowMoreActivity;
+import com.vlabs.androiweartest.events.data.OnAssetLoaded;
 import com.vlabs.androiweartest.events.data.OnStations;
-import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearDataEvent;
-import com.vlabs.wearcontract.dataevent.AssetLoadedEvent;
+import com.vlabs.wearcontract.WearMessage;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class WearListenerService extends WearableListenerService {
                                 .setBackground(defaultBackground())
                                 .setCustomSizePreset(Notification.WearableExtender.SIZE_FULL_SCREEN)
                                 .setDisplayIntent(viewPendingIntent)
-                .addPage(page))
+                                .addPage(page))
                 .build();
 
         NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, myFullScreenNotification);
@@ -102,27 +102,15 @@ public class WearListenerService extends WearableListenerService {
                 case WearDataEvent.PATH_STATIONS_SEARCH:
                     eventBusEvent = OnStations.fromDataEvent(event, path);
                     break;
+                case WearDataEvent.PATH_IMAGE_LOADED:
+                    eventBusEvent = OnAssetLoaded.fromDataEvent(event);
+                    break;
                 default:
-                    if (isAssetEvent(event)) {
-                        eventBusEvent = new AssetLoadedEvent(event);
-                    } else {
-                        eventBusEvent = null;
-                    }
-                }
-
-                postIfNotNull(eventBusEvent);
+                    eventBusEvent = null;
             }
-        }
 
-    private boolean isAssetEvent(final DataEvent event) {
-        if (event.getType() == DataEvent.TYPE_CHANGED) {
-            byte[] bytes = event.getDataItem().getData();
-            if (bytes.length > 0) {
-                final DataMap dataMap = DataMap.fromByteArray(bytes);
-                return dataMap.containsKey(AssetLoadedEvent.KEY_IMAGE_ASSET);
-            }
+            postIfNotNull(eventBusEvent);
         }
-        return false;
     }
 
     private void postIfNotNull(final Object event) {

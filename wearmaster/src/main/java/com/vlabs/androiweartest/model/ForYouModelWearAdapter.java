@@ -41,7 +41,7 @@ public class ForYouModelWearAdapter {
             }
             putRequest.getDataMap().putDataMapArrayList(WearDataEvent.KEY_STATIONS, stationMaps);
             putRequest.setUrgent();
-            mConnectionManager.putData(putRequest);
+            mConnectionManager.putData(putRequest.asPutDataRequest());
         }
     }
 
