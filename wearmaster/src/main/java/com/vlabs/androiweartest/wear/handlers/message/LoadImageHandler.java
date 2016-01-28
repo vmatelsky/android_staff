@@ -10,7 +10,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.connection.ConnectionManager;
+import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.wearcontract.messages.LoadImageMessage;

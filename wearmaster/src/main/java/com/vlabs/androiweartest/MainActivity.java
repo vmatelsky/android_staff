@@ -9,8 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
-import com.vlabs.androiweartest.model.ForYouModelWearAdapter;
-import com.vlabs.androiweartest.model.MyStationsWearAdapter;
+import com.vlabs.androiweartest.wear.model.ForYouModelWearAdapter;
+import com.vlabs.androiweartest.wear.model.MyStationsWearAdapter;
 import com.vlabs.androiweartest.wear.managers.RecentlyPlayedManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearMessage;
@@ -20,7 +20,6 @@ import com.vlabs.wearcontract.messages.FeedbackMessage;
 
 import java.io.ByteArrayOutputStream;
 
-import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class MainActivity extends AppCompatActivity {

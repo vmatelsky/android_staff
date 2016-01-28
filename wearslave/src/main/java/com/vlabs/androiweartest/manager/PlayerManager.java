@@ -1,9 +1,9 @@
-package com.vlabs.androiweartest.models;
+package com.vlabs.androiweartest.manager;
 
 import android.util.Log;
 
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
+import com.vlabs.wearcontract.PlayStationData;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;

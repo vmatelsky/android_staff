@@ -4,23 +4,32 @@ import android.content.Context;
 
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
-import com.vlabs.androiweartest.connection.ConnectionManager;
-import com.vlabs.androiweartest.connection.ConnectionManagerImpl;
+import com.vlabs.androiweartest.wear.connection.ConnectionManager;
+import com.vlabs.androiweartest.wear.di.WearScopeModule;
 import com.vlabs.androiweartest.wear.handlers.IncomingHandler;
 import com.vlabs.androiweartest.wear.managers.WearPlayerManager;
 
+import javax.inject.Inject;
+
+import dagger.ObjectGraph;
+
 public class WearFacade {
 
-    private final IncomingHandler mIncomingHandler;
+    @Inject
+    IncomingHandler mIncomingHandler;
 
-    private final WearPlayerManager mWearPlayerManager;
+    @Inject
+    WearPlayerManager mWearPlayerManager;
 
-    private final ConnectionManager mConnectionManager;
+    @Inject
+    ConnectionManager mConnectionManager;
 
-    public WearFacade(final Context context) {
-        mConnectionManager = new ConnectionManagerImpl(context);
-        mIncomingHandler = new IncomingHandler(context, mConnectionManager);
-        mWearPlayerManager = new WearPlayerManager(mConnectionManager);
+    private final ObjectGraph mObjectGraph;
+
+    public WearFacade(
+            final Context context) {
+        mObjectGraph = ObjectGraph.create(new WearScopeModule(context));
+        mObjectGraph.inject(this);
     }
 
     public void handleMessageEvent(final MessageEvent messageEvent) {

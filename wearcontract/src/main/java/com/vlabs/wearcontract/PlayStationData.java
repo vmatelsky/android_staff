@@ -1,9 +1,8 @@
-package com.vlabs.androiweartest.models;
+package com.vlabs.wearcontract;
 
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.DataMapBuilder;
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
-import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
 
 public class PlayStationData {
     private static final String FIELD_STATION = "wear-station";

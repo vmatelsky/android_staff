@@ -5,7 +5,7 @@ import android.widget.ImageButton;
 
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.messages.ControlMessage;

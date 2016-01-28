@@ -3,7 +3,7 @@ package com.vlabs.androiweartest.images;
 import android.graphics.Bitmap;
 
 import com.vlabs.androiweartest.events.data.OnImageLoaded;
-import com.vlabs.wearmanagers.Receiver;
+import com.vlabs.Receiver;
 
 import de.greenrobot.event.EventBus;
 

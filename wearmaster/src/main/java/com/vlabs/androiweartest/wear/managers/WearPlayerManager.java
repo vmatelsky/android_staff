@@ -1,8 +1,12 @@
 package com.vlabs.androiweartest.wear.managers;
 
-import com.vlabs.androiweartest.connection.ConnectionManager;
+import android.content.Context;
+import android.media.AudioManager;
+
+import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearPlayerState;
+import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.dummy.DummyWearPlayerState;
 import com.vlabs.wearcontract.messages.FeedbackMessage;
 
@@ -12,7 +16,10 @@ public class WearPlayerManager {
 
     private final ConnectionManager mConnectionManager;
 
-    public WearPlayerManager(ConnectionManager connectionManager) {
+    private final Context mContext;
+
+    public WearPlayerManager(final Context context, final ConnectionManager connectionManager) {
+        mContext = context;
         mConnectionManager = connectionManager;
     }
 
@@ -48,4 +55,21 @@ public class WearPlayerManager {
         mConnectionManager.broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage(feedback).asDataMap());
     }
 
+    public void play(final WearStation station) {
+        mPlayerState = new WearPlayerState();
+
+        mPlayerState.setIsPlaying(true);
+        mPlayerState.setThumbedState(WearPlayerState.UNKNOWN_VOLUME);
+        mPlayerState.setImagePath(station.getImagePath());
+        mPlayerState.setDeviceVolume(getDeviceVolume());
+        mPlayerState.setThumbsEnabled(!station.isLive());
+        mPlayerState.setTitle(station.name());
+
+        syncPlayerState(mPlayerState);
+    }
+
+    private int getDeviceVolume() {
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    }
 }

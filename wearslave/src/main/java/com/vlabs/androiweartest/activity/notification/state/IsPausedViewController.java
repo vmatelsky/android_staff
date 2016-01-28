@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearStation;

@@ -3,7 +3,7 @@ package com.vlabs.androiweartest.wear.handlers.message;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
-import com.vlabs.androiweartest.connection.ConnectionManager;
+import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.wearcontract.messages.SearchMessage;

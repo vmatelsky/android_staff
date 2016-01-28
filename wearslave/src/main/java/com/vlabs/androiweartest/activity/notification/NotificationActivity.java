@@ -15,7 +15,7 @@ import com.vlabs.androiweartest.activity.notification.state.IsPlayingViewControl
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.manager.ConnectionManager;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;

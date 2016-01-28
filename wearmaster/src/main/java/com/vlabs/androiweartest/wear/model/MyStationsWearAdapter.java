@@ -1,9 +1,9 @@
-package com.vlabs.androiweartest.model;
+package com.vlabs.androiweartest.wear.model;
 
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.vlabs.androiweartest.MasterApplication;
-import com.vlabs.androiweartest.connection.ConnectionManager;
+import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.dummy.DummyWearStation;
@@ -12,17 +12,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+public class MyStationsWearAdapter {
 
-public class ForYouModelWearAdapter {
-
-    private final static String sPath = WearDataEvent.PATH_STATIONS_FOR_YOU;
+    private final static String sPath = WearDataEvent.PATH_STATIONS_MY_STATIONS;
 
     private final List<WearStation> mLastObtainedStations;
-    private ConnectionManager mConnectionManager;
+    private final ConnectionManager mConnectionManager;
 
-    public ForYouModelWearAdapter() {
-        mConnectionManager = MasterApplication.instance().wearFacade().connectionManager();
+    public MyStationsWearAdapter() {
         mLastObtainedStations = DummyWearStation.Dummies;
+        mConnectionManager = MasterApplication.instance().wearFacade().connectionManager();
     }
 
     public void refresh() {

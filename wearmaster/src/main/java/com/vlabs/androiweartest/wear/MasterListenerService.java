@@ -1,4 +1,4 @@
-package com.vlabs.androiweartest;
+package com.vlabs.androiweartest.wear;
 
 import android.util.Log;
 
@@ -6,6 +6,8 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
+import com.vlabs.androiweartest.MainActivity;
+import com.vlabs.androiweartest.MasterApplication;
 import com.vlabs.androiweartest.wear.WearFacade;
 
 import java.util.List;

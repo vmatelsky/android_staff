@@ -1,4 +1,4 @@
-package com.vlabs.androiweartest.connection;
+package com.vlabs.androiweartest.wear.connection;
 
 import android.graphics.Bitmap;
 

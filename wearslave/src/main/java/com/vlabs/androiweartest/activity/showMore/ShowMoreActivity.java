@@ -12,7 +12,7 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.launch.WearMainActivity;
 import com.vlabs.androiweartest.manager.ConnectionManager;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;

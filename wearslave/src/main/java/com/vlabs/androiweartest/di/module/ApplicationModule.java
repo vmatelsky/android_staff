@@ -9,7 +9,7 @@ import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
 import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.manager.ConnectionManagerImpl;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 
 import javax.inject.Singleton;
 

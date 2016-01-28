@@ -8,8 +8,8 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.ListItemEntity;
 import com.vlabs.androiweartest.activity.pick.ListItemView;
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearStation;
 
 import javax.inject.Inject;

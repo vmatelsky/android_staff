@@ -14,7 +14,7 @@ import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.manager.ConnectionManager;
-import com.vlabs.androiweartest.models.PlayerManager;
+import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
 import com.vlabs.wearcontract.WearStation;

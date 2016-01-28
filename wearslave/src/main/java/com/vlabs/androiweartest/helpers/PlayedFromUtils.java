@@ -2,7 +2,7 @@ package com.vlabs.androiweartest.helpers;
 
 import android.text.TextUtils;
 
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
+import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearStation;
 

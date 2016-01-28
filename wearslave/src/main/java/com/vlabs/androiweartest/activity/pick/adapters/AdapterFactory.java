@@ -5,7 +5,7 @@ import android.support.wearable.view.WearableListView;
 
 import com.clearchannel.iheartradio.controller.view.MessageListViewItemEntity;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.helpers.analytics.WearAnalyticsConstants;
+import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
 import com.vlabs.androiweartest.activity.pick.ListItemAdapter;
 import com.vlabs.androiweartest.activity.pick.ListItemEntity;
 import com.vlabs.androiweartest.activity.pick.adapters.items.StationListItemEntity;
