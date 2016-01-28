@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendRecentlyPlayed() {
         PublishSubject<WearStation> observable = PublishSubject.create();
-        RecentlyPlayedManager manager = new RecentlyPlayedManager(observable);
         observable.onNext(DummyWearStation.Dummy2);
     }
 

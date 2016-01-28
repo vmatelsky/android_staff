@@ -30,7 +30,7 @@ public class WearScopeModule {
     public WearScopeModule(final Context context) {
         mConnectionManager = new ConnectionManagerImpl(context);
         mWearPlayerManager = new WearPlayerManager(context, mConnectionManager);
-        mIncomingHandler = new IncomingHandler(context, mConnectionManager, mWearPlayerManager);
+        mIncomingHandler = new IncomingHandler(context, mConnectionManager);
     }
 
     @Provides

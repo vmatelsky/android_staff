@@ -15,8 +15,9 @@ public class PlayMessageHandler implements MessageHandler {
     @Override
     public void handle(final MessageEvent messageEvent) {
         PlayStationData data = PlayStationData.fromDataMap(DataMap.fromByteArray(messageEvent.getData()));
-        onChanged.onNext(data.station);
+
         // TODO: tag data.playedFrom in analytics??
+        onChanged.onNext(data.station);
     }
 
     public Observable<WearStation> onChanged() {

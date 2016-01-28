@@ -15,7 +15,6 @@ import com.vlabs.androiweartest.wear.handlers.message.MessageHandler;
 import com.vlabs.androiweartest.wear.handlers.message.PathStateHandler;
 import com.vlabs.androiweartest.wear.handlers.message.PlayMessageHandler;
 import com.vlabs.androiweartest.wear.handlers.message.SearchMessageHandler;
-import com.vlabs.androiweartest.wear.managers.WearPlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearMessage;
 
@@ -28,7 +27,7 @@ public class IncomingHandler {
     private final Map<String, MessageHandler> mMessageHandlers = new HashMap<>();
     private final Map<String, DataHandler> mDataHandlers = new HashMap<>();
 
-    public IncomingHandler(final Context context, ConnectionManager connectionManager, WearPlayerManager playerManager) {
+    public IncomingHandler(final Context context, ConnectionManager connectionManager) {
         mMessageHandlers.put(WearMessage.STATE.path(), new PathStateHandler());
         mMessageHandlers.put(WearMessage.SEARCH.path(), new SearchMessageHandler(connectionManager));
         mMessageHandlers.put(WearMessage.LOAD_IMAGE.path(), new LoadImageHandler(context, connectionManager));

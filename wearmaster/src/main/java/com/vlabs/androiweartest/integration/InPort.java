@@ -2,6 +2,7 @@ package com.vlabs.androiweartest.integration;
 
 import com.vlabs.Converter;
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.model.LoadedImage;
 
 import java.util.List;
 
@@ -28,6 +29,13 @@ public class InPort<OuterType, WearType> implements Action1<OuterType> {
     public static class RecentlyPlayedPin<OuterType> extends InPort<OuterType, WearStation> {
 
         public RecentlyPlayedPin(final Observable<OuterType> onChanged, final Converter<OuterType, WearStation> converter) {
+            super(onChanged, converter);
+        }
+    }
+
+    public static class ImageLoadedPin<OuterType> extends InPort<OuterType, LoadedImage> {
+
+        public ImageLoadedPin(final Observable<OuterType> onChanged, final Converter<OuterType, LoadedImage> converter) {
             super(onChanged, converter);
         }
     }

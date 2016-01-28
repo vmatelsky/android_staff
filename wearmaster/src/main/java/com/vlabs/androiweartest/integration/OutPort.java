@@ -1,6 +1,7 @@
 package com.vlabs.androiweartest.integration;
 
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.messages.LoadImageMessage;
 
 import rx.Observable;
 
@@ -9,6 +10,13 @@ public class OutPort<WearType> {
     public static class StationPlayedPort extends OutPort<WearStation> {
 
         public StationPlayedPort(final Observable<WearStation> onChanged) {
+            super(onChanged);
+        }
+    }
+
+    public static class LoadImagePort extends OutPort<LoadImageMessage> {
+
+        public LoadImagePort(final Observable<LoadImageMessage> onChanged) {
             super(onChanged);
         }
     }
@@ -22,4 +30,6 @@ public class OutPort<WearType> {
     public Observable<WearType> onChanged() {
         return mInnerChanged;
     }
+
+
 }
