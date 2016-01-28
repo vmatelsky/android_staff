@@ -1,6 +1,7 @@
 package com.vlabs.androiweartest.integration;
 
 import com.vlabs.Converter;
+import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.model.Feedback;
 import com.vlabs.wearcontract.model.LoadedImage;
@@ -44,6 +45,13 @@ public class InPort<OuterType, WearType> implements Action1<OuterType> {
     public static class FeedbackPin extends InPort<Feedback, Feedback> {
 
         public FeedbackPin(final Observable<Feedback> onChanged, final Converter<Feedback, Feedback> converter) {
+            super(onChanged, converter);
+        }
+    }
+
+    public static class PlayerStateChangedPin<OuterType> extends InPort<OuterType, WearPlayerState> {
+
+        public PlayerStateChangedPin(final Observable<OuterType> onChanged, final Converter<OuterType, WearPlayerState> converter) {
             super(onChanged, converter);
         }
     }

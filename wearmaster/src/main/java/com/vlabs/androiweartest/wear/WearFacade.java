@@ -9,6 +9,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.vlabs.androiweartest.integration.InPort;
 import com.vlabs.androiweartest.integration.OutPort;
 import com.vlabs.androiweartest.oughter.OuterImage;
+import com.vlabs.androiweartest.oughter.OuterPlayerState;
 import com.vlabs.androiweartest.oughter.OuterStation;
 import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.androiweartest.wear.di.WearScopeModule;
@@ -22,6 +23,7 @@ import com.vlabs.androiweartest.wear.handlers.message.PlayMessageHandler;
 import com.vlabs.androiweartest.wear.handlers.message.SearchMessageHandler;
 import com.vlabs.androiweartest.wear.model.FeedbackModel;
 import com.vlabs.androiweartest.wear.model.ImageLoadedModel;
+import com.vlabs.androiweartest.wear.model.PlayerStateChangedModel;
 import com.vlabs.androiweartest.wear.model.RecentlyPlayedModel;
 import com.vlabs.androiweartest.wear.model.StationsModel;
 import com.vlabs.wearcontract.WearDataEvent;
@@ -53,6 +55,7 @@ public class WearFacade {
     private final RecentlyPlayedModel<OuterStation> mRecentlyPlayedModel;
     private final ImageLoadedModel mImageLoadedModel;
     private final FeedbackModel mFeedbackModel;
+    private final PlayerStateChangedModel mPlayerStateChangedModel;
 
     public WearFacade(
             InPort.ForYouPin<List<OuterStation>> forYouPin,
@@ -60,6 +63,7 @@ public class WearFacade {
             InPort.RecentlyPlayedPin<OuterStation> recentlyPlayedPin,
             InPort.ImageLoadedPin<OuterImage> imageLoadedPin,
             InPort.FeedbackPin feedbackPin,
+            InPort.PlayerStateChangedPin<OuterPlayerState> playerStateChangedPin,
             final Context context) {
         mObjectGraph = ObjectGraph.create(new WearScopeModule(context));
         mObjectGraph.inject(this);
@@ -69,6 +73,7 @@ public class WearFacade {
         mRecentlyPlayedModel = new RecentlyPlayedModel<>(recentlyPlayedPin, mConnectionManager);
         mImageLoadedModel = new ImageLoadedModel<>(imageLoadedPin, mConnectionManager);
         mFeedbackModel = new FeedbackModel(feedbackPin, mConnectionManager);
+        mPlayerStateChangedModel = new PlayerStateChangedModel(playerStateChangedPin, mConnectionManager);
 
         final PlayMessageHandler playMessageHandler = new PlayMessageHandler();
         mStationPlayedPort = new OutPort.StationPlayedPort(playMessageHandler.onChanged());

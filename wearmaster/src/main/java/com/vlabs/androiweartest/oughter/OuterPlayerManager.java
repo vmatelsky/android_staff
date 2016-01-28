@@ -4,16 +4,14 @@ import android.content.Context;
 import android.media.AudioManager;
 
 import com.vlabs.androiweartest.MasterApplication;
-import com.vlabs.androiweartest.wear.connection.ConnectionManager;
-import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.dummy.DummyWearPlayerState;
-import com.vlabs.wearcontract.messages.FeedbackMessage;
+import com.vlabs.wearcontract.model.Feedback;
 
 public class OuterPlayerManager {
 
-    private WearPlayerState mPlayerState = DummyWearPlayerState.Dummy1;
+    private OuterPlayerState mPlayerState = new OuterPlayerState(DummyWearPlayerState.Dummy1.getData());
 
     private final Context mContext;
 
@@ -45,16 +43,16 @@ public class OuterPlayerManager {
         sendFeedbackMessage(feedback);
     }
 
-    private void syncPlayerState(final WearPlayerState wearPlayerState) {
-//        mConnectionManager.broadcastMessage(WearMessage.STATE, wearPlayerState.getData());
+    private void syncPlayerState(final OuterPlayerState outerPlayerState) {
+        MasterApplication.instance().integrationModule().playerStateChangedPin.call(outerPlayerState);
     }
 
     private void sendFeedbackMessage(final String feedback) {
-//        mConnectionManager.broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage(feedback).asDataMap());
+        MasterApplication.instance().integrationModule().feedbackPin.call(new Feedback(feedback));
     }
 
     public void play(final WearStation station) {
-        mPlayerState = new WearPlayerState();
+        mPlayerState = new OuterPlayerState();
 
         mPlayerState.setIsPlaying(true);
         mPlayerState.setThumbedState(WearPlayerState.UNKNOWN_VOLUME);

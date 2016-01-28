@@ -34,6 +34,7 @@ public class MasterApplication extends Application {
                                  mIntegrationModule.recentlyPlayedPin,
                                  mIntegrationModule.imageLoadedPin,
                                  mIntegrationModule.feedbackPin,
+                                 mIntegrationModule.playerStateChangedPin,
                                  this);
 
         initFacade(mFacade);
@@ -56,6 +57,10 @@ public class MasterApplication extends Application {
 
     public MasterIntegrationModule integrationModule() {
         return mIntegrationModule;
+    }
+
+    public OuterPlayerManager playerManager() {
+        return mOuterPlayerManager;
     }
 
 }

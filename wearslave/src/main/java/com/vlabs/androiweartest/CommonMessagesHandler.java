@@ -25,6 +25,6 @@ public class CommonMessagesHandler {
 
     @SuppressWarnings("unused")
     public void onEventMainThread(FeedbackMessage event) {
-        Toast.makeText(mContext, event.feedback(), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, event.feedback().message(), Toast.LENGTH_LONG).show();
     }
 }

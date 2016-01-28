@@ -15,7 +15,7 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        mPlayerManager = MasterApplication.instance().wearFacade().playerManager();
+        mPlayerManager = MasterApplication.instance().playerManager();
 
         findViewById(R.id.toggle_play).setOnClickListener(this::togglePlay);
 
