@@ -33,7 +33,7 @@ public class IncomingHandler {
         mMessageHandlers.put(WearMessage.SEARCH.path(), new SearchMessageHandler(connectionManager));
         mMessageHandlers.put(WearMessage.LOAD_IMAGE.path(), new LoadImageHandler(context, connectionManager));
         mMessageHandlers.put(WearMessage.ANALYTICS.path(), new AnalyticsMessageHandler());
-        mMessageHandlers.put(WearMessage.PLAY_STATION.path(), new PlayMessageHandler(playerManager));
+        mMessageHandlers.put(WearMessage.PLAY_STATION.path(), new PlayMessageHandler());
 
         mDataHandlers.put(WearDataEvent.PATH_IMAGE_LOADED, new ImageLoadedHandler());
     }

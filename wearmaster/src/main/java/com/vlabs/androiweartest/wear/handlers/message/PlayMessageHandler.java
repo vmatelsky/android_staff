@@ -2,25 +2,25 @@ package com.vlabs.androiweartest.wear.handlers.message;
 
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.MessageEvent;
-import com.vlabs.androiweartest.wear.managers.WearPlayerManager;
 import com.vlabs.wearcontract.PlayStationData;
+import com.vlabs.wearcontract.WearStation;
+
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class PlayMessageHandler implements MessageHandler {
 
-    private final WearPlayerManager mPlayerManager;
-
-    public PlayMessageHandler(final WearPlayerManager playerManager) {
-        mPlayerManager = playerManager;
-    }
+    final PublishSubject<WearStation> onChanged = PublishSubject.create();
 
     @Override
     public void handle(final MessageEvent messageEvent) {
         PlayStationData data = PlayStationData.fromDataMap(DataMap.fromByteArray(messageEvent.getData()));
+        onChanged.onNext(data.station);
+        // TODO: tag data.playedFrom in analytics??
+    }
 
-        mPlayerManager.play(data.station);
-
-        // TODO: tag analytics??
-
+    public Observable<WearStation> onChanged() {
+        return onChanged;
     }
 
 }
