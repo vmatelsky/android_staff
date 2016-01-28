@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.vlabs.androiweartest.oughter.OuterImage;
+import com.vlabs.androiweartest.oughter.OuterStation;
 import com.vlabs.androiweartest.oughter.model.ForYouModelWearAdapter;
 import com.vlabs.androiweartest.oughter.model.MyStationsWearAdapter;
-import com.vlabs.wearcontract.WearStation;
-import com.vlabs.wearcontract.dummy.DummyWearStation;
 import com.vlabs.wearcontract.messages.LoadImageMessage;
 import com.vlabs.wearcontract.model.Feedback;
-
-import rx.subjects.PublishSubject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendRecentlyPlayed() {
-        PublishSubject<WearStation> observable = PublishSubject.create();
-        observable.onNext(DummyWearStation.Dummy2);
+        MasterApplication.instance().integrationModule().recentlyPlayedPin.call(new OuterStation(2));
     }
 
     private void openPlayer() {

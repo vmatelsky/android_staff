@@ -60,6 +60,10 @@ public class MasterApplication extends Application {
             response.add(new OuterStation(1));
             mIntegrationModule.mySearchStationsPin.call(response);
         });
+
+        facade.analyticsPort().onChanged().subscribe(analyticsMessage -> {
+            // TODO: tag analytics
+        });
     }
 
     public WearFacade wearFacade() {

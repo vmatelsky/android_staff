@@ -1,6 +1,7 @@
 package com.vlabs.androiweartest.integration;
 
 import com.vlabs.wearcontract.WearStation;
+import com.vlabs.wearcontract.messages.AnalyticsMessage;
 import com.vlabs.wearcontract.messages.LoadImageMessage;
 import com.vlabs.wearcontract.messages.SearchMessage;
 
@@ -25,6 +26,13 @@ public class OutPort<WearType> {
     public static class SearchStationPort extends OutPort<SearchMessage> {
 
         public SearchStationPort(final Observable<SearchMessage> onChanged) {
+            super(onChanged);
+        }
+    }
+
+    public static class AnalyticsPort extends OutPort<AnalyticsMessage> {
+
+        public AnalyticsPort(final Observable<AnalyticsMessage> onChanged) {
             super(onChanged);
         }
     }

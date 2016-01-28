@@ -46,7 +46,8 @@ public class WearFacade {
 
     private final OutPort.StationPlayedPort mStationPlayedPort;
     private final OutPort.LoadImagePort mLoadImagePort;
-    private OutPort.SearchStationPort mSearchStationPort;
+    private final OutPort.SearchStationPort mSearchStationPort;
+    private final OutPort.AnalyticsPort mAnalyticsPort;
 
     private final StationsModel.ForYouModel<List<OuterStation>> mForYouModel;
     private final StationsModel.MyStationsModel<List<OuterStation>> mMyStationsModel;
@@ -85,9 +86,12 @@ public class WearFacade {
         final SearchMessageHandler searchMessageHandler = new SearchMessageHandler();
         mSearchStationPort = new OutPort.SearchStationPort(searchMessageHandler.onSearchTermChanged());
 
+        final AnalyticsMessageHandler analyticsMessageHandler = new AnalyticsMessageHandler();
+        mAnalyticsPort = new OutPort.AnalyticsPort(analyticsMessageHandler.onReceived());
+
         mMessageHandlers.put(WearMessage.SEARCH.path(), searchMessageHandler);
         mMessageHandlers.put(WearMessage.LOAD_IMAGE.path(), loadImageHandler);
-        mMessageHandlers.put(WearMessage.ANALYTICS.path(), new AnalyticsMessageHandler());
+        mMessageHandlers.put(WearMessage.ANALYTICS.path(), analyticsMessageHandler);
         mMessageHandlers.put(WearMessage.PLAY_STATION.path(), playMessageHandler);
     }
 
@@ -127,8 +131,8 @@ public class WearFacade {
         return mSearchStationPort;
     }
 
-    public ConnectionManager connectionManager() {
-        return mConnectionManager;
+    public OutPort.AnalyticsPort analyticsPort() {
+        return mAnalyticsPort;
     }
 
 }
