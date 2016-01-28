@@ -1,21 +1,10 @@
 package com.vlabs.androiweartest;
 
 import android.app.Application;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import com.google.android.gms.wearable.Asset;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
 import com.vlabs.androiweartest.oughter.OuterImage;
 import com.vlabs.androiweartest.wear.WearFacade;
-import com.vlabs.wearcontract.WearDataEvent;
-import com.vlabs.wearcontract.dummy.DummyWearStation;
-import com.vlabs.wearcontract.messages.LoadImageMessage;
-
-import java.io.ByteArrayOutputStream;
-
-import rx.functions.Action1;
+import com.vlabs.androiweartest.oughter.OuterPlayerManager;
 
 public class MasterApplication extends Application {
 
@@ -23,6 +12,8 @@ public class MasterApplication extends Application {
 
     private WearFacade mFacade;
     private MasterIntegrationModule mIntegrationModule;
+
+    private OuterPlayerManager mOuterPlayerManager;
 
     public static MasterApplication instance() {
         return sInstance;
@@ -35,11 +26,14 @@ public class MasterApplication extends Application {
 
         mIntegrationModule = new MasterIntegrationModule();
 
+        mOuterPlayerManager = new OuterPlayerManager(this);
+
         mFacade = new WearFacade(
                                  mIntegrationModule.forYouPin,
                                  mIntegrationModule.myStationsPin,
                                  mIntegrationModule.recentlyPlayedPin,
                                  mIntegrationModule.imageLoadedPin,
+                                 mIntegrationModule.feedbackPin,
                                  this);
 
         initFacade(mFacade);
@@ -49,6 +43,10 @@ public class MasterApplication extends Application {
     private void initFacade(final WearFacade facade) {
         facade.loadImagePort().onChanged().subscribe(loadImageMessage -> {
             mIntegrationModule.imageLoadedPin.call(new OuterImage(loadImageMessage));
+        });
+
+        facade.stationPlayedPort().onChanged().subscribe(station -> {
+            mOuterPlayerManager.play(station);
         });
     }
 

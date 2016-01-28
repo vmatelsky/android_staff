@@ -6,7 +6,7 @@ import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.androiweartest.wear.connection.ConnectionManagerImpl;
 import com.vlabs.androiweartest.wear.WearFacade;
 import com.vlabs.androiweartest.wear.handlers.IncomingHandler;
-import com.vlabs.androiweartest.wear.managers.WearPlayerManager;
+import com.vlabs.androiweartest.oughter.OuterPlayerManager;
 
 import javax.inject.Singleton;
 
@@ -25,11 +25,9 @@ public class WearScopeModule {
 
     private final ConnectionManager mConnectionManager;
     private final IncomingHandler mIncomingHandler;
-    private final WearPlayerManager mWearPlayerManager;
 
     public WearScopeModule(final Context context) {
         mConnectionManager = new ConnectionManagerImpl(context);
-        mWearPlayerManager = new WearPlayerManager(context, mConnectionManager);
         mIncomingHandler = new IncomingHandler(context, mConnectionManager);
     }
 
@@ -37,12 +35,6 @@ public class WearScopeModule {
     @Singleton
     public ConnectionManager connectionManager() {
         return mConnectionManager;
-    }
-
-    @Provides
-    @Singleton
-    public WearPlayerManager playerManager() {
-        return mWearPlayerManager;
     }
 
     @Provides

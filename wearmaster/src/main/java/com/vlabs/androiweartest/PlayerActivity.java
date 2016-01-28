@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.vlabs.androiweartest.wear.managers.WearPlayerManager;
+import com.vlabs.androiweartest.oughter.OuterPlayerManager;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    private WearPlayerManager mPlayerManager;
+    private OuterPlayerManager mPlayerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

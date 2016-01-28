@@ -1,8 +1,9 @@
-package com.vlabs.androiweartest.wear.managers;
+package com.vlabs.androiweartest.oughter;
 
 import android.content.Context;
 import android.media.AudioManager;
 
+import com.vlabs.androiweartest.MasterApplication;
 import com.vlabs.androiweartest.wear.connection.ConnectionManager;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.WearPlayerState;
@@ -10,17 +11,14 @@ import com.vlabs.wearcontract.WearStation;
 import com.vlabs.wearcontract.dummy.DummyWearPlayerState;
 import com.vlabs.wearcontract.messages.FeedbackMessage;
 
-public class WearPlayerManager {
+public class OuterPlayerManager {
 
     private WearPlayerState mPlayerState = DummyWearPlayerState.Dummy1;
 
-    private final ConnectionManager mConnectionManager;
-
     private final Context mContext;
 
-    public WearPlayerManager(final Context context, final ConnectionManager connectionManager) {
+    public OuterPlayerManager(final Context context) {
         mContext = context;
-        mConnectionManager = connectionManager;
     }
 
     public void thumbDown() {
@@ -48,11 +46,11 @@ public class WearPlayerManager {
     }
 
     private void syncPlayerState(final WearPlayerState wearPlayerState) {
-        mConnectionManager.broadcastMessage(WearMessage.STATE, wearPlayerState.getData());
+//        mConnectionManager.broadcastMessage(WearMessage.STATE, wearPlayerState.getData());
     }
 
     private void sendFeedbackMessage(final String feedback) {
-        mConnectionManager.broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage(feedback).asDataMap());
+//        mConnectionManager.broadcastMessage(WearMessage.FEEDBACK, new FeedbackMessage(feedback).asDataMap());
     }
 
     public void play(final WearStation station) {
