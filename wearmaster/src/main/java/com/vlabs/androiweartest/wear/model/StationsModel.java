@@ -28,6 +28,13 @@ public abstract class StationsModel<OuterType> implements Action1<List<WearStati
         }
     }
 
+    public static class SearchStationsModel<OuterStation> extends StationsModel<OuterStation> {
+
+        public SearchStationsModel(final InPort.SearchStationsPin<OuterStation> searchStationsPin, final ConnectionManager connectionManager) {
+            super(searchStationsPin, connectionManager, WearDataEvent.PATH_STATIONS_SEARCH);
+        }
+    }
+
     private ConnectionManager mConnectionManager;
     private final String mPath;
 

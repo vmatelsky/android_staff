@@ -3,8 +3,11 @@ package com.vlabs.androiweartest;
 import android.app.Application;
 
 import com.vlabs.androiweartest.oughter.OuterImage;
-import com.vlabs.androiweartest.wear.WearFacade;
 import com.vlabs.androiweartest.oughter.OuterPlayerManager;
+import com.vlabs.androiweartest.oughter.OuterStation;
+import com.vlabs.androiweartest.wear.WearFacade;
+
+import java.util.ArrayList;
 
 public class MasterApplication extends Application {
 
@@ -31,6 +34,7 @@ public class MasterApplication extends Application {
         mFacade = new WearFacade(
                                  mIntegrationModule.forYouPin,
                                  mIntegrationModule.myStationsPin,
+                                 mIntegrationModule.mySearchStationsPin,
                                  mIntegrationModule.recentlyPlayedPin,
                                  mIntegrationModule.imageLoadedPin,
                                  mIntegrationModule.feedbackPin,
@@ -48,6 +52,13 @@ public class MasterApplication extends Application {
 
         facade.stationPlayedPort().onChanged().subscribe(station -> {
             mOuterPlayerManager.play(station);
+        });
+
+        facade.searchStationPort().onChanged().subscribe(searchMessage -> {
+            // TODO: perform real search
+            final ArrayList<OuterStation> response = new ArrayList<>();
+            response.add(new OuterStation(1));
+            mIntegrationModule.mySearchStationsPin.call(response);
         });
     }
 
