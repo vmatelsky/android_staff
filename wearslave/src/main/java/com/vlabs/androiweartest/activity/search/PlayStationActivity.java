@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
+import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
@@ -24,9 +25,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import rx.functions.Action1;
 
-public class PlayStationActivity extends BaseActivity implements Action1<List<WearStation>> {
+public class PlayStationActivity extends BaseActivity  {
 
     @Inject
     PlayerManager mPlayerManager;
@@ -40,9 +40,12 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     @Inject
     EventBus mEventBus;
 
+    @Inject
+    ChangeBackgroundBehavior mBehavior;
+
     private WearStation mStation;
     private TextView mStationButton;
-    private ImageByDataPathView mStationBackground;
+    private ImageByDataPathView mBackground;
 
     private final View.OnClickListener onPlayStationListener = new View.OnClickListener() {
         @Override
@@ -64,14 +67,14 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
 
         getComponent().inject(this);
 
-        final String titleText = getIntent().getStringExtra(WearExtras.EXTRA_TITLE);
-
         mStationButton = (TextView) findViewById(R.id.station_name_button);
-        mStationBackground = (ImageByDataPathView) findViewById(R.id.station_background);
+        mStationButton.setOnClickListener(onPlayStationListener);
+
+        mBackground = (ImageByDataPathView) findViewById(R.id.station_background);
+
+        final String titleText = getIntent().getStringExtra(WearExtras.EXTRA_TITLE);
         final TextView title = (TextView) findViewById(R.id.title);
         title.setText(titleText);
-
-        mStationButton.setOnClickListener(onPlayStationListener);
     }
 
     private String getPath() {
@@ -92,19 +95,15 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     }
 
     private void clearPlayButton() {
-        if(mStationButton != null) {
-            mStationButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        }
+        mStationButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
     }
 
     private void updateStationButton() {
-        if(mStationButton != null) {
-            mStationButton.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableForStation(), null);
-        }
+        mStationButton.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableForStation(), null);
     }
 
     private Drawable drawableForStation() {
-        if (mStation == null || mStationButton == null) {
+        if (mStation == null) {
             return null;
         }
         return ContextCompat.getDrawable(this, R.drawable.ic_blackcard_play);
@@ -113,12 +112,14 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
     @Override
     protected void onStart() {
         super.onStart();
+        mBehavior.activateFor(mBackground);
         mEventBus.register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        mBehavior.deactivateFor(mBackground);
         mEventBus.unregister(this);
     }
 
@@ -139,18 +140,11 @@ public class PlayStationActivity extends BaseActivity implements Action1<List<We
         if (event.path().equals(getPath())) {
             final List<WearStation> wearStations = event.stations();
             if (wearStations == null || wearStations.isEmpty()) {
-                mStationBackground.setImageBitmap(null);
                 mStation = null;
             } else {
                 mStation = wearStations.get(0);
-                mStationBackground.setImagePath(mStation.getImagePath());
             }
             updateStationUi();
         }
-    }
-
-    @Override
-    public void call(final List<WearStation> wearStations) {
-
     }
 }
