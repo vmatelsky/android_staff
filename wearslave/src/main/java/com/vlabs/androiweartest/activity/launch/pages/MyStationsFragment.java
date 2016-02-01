@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseFragment;
 import com.vlabs.androiweartest.activity.pick.PickStationActivity;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.job.connectivity.ConnectivityModule;
 import com.vlabs.wearcontract.WearDataEvent;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ public class MyStationsFragment extends BaseFragment {
     }
 
     @Inject
-    ConnectionManager mConnectionManager;
+    ConnectivityModule mConnectivityModule;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MyStationsFragment extends BaseFragment {
     }
 
     private void onIconViewPressed(final View view) {
-        if (mConnectionManager.isConnected()) {
+        if (mConnectivityModule.isConnected(view.getContext())) {
             launchStationList();
         } else {
             showNoConnectionMsg();

@@ -1,16 +1,17 @@
 package com.vlabs.androiweartest.helpers.analytics;
 
 import com.google.android.gms.wearable.DataMap;
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.DataMapBuilder;
-import com.vlabs.androiweartest.manager.ConnectionManager;
-import com.vlabs.wearcontract.WearMessage;
+import com.vlabs.androiweartest.job.BroadcastMessageJob;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
+import com.vlabs.wearcontract.WearMessage;
 
 public class Analytics {
-    private final ConnectionManager mConnectionManager;
+    private final JobManager mJobManager;
 
-    public Analytics(ConnectionManager connectionManager) {
-        mConnectionManager = connectionManager;
+    public Analytics(final JobManager jobManager) {
+        mJobManager = jobManager;
     }
 
     public void broadcastRemoteAction(WearAnalyticsConstants.WearPlayerAction action) {
@@ -22,7 +23,7 @@ public class Analytics {
     }
 
     private void broadcast(DataMap data) {
-        mConnectionManager.broadcastMessage(WearMessage.ANALYTICS, data);
+        mJobManager.addJobInBackground(new BroadcastMessageJob(WearMessage.ANALYTICS, data.toBundle()));
     }
 
     private static DataMap makeRemoteActionData(WearAnalyticsConstants.WearPlayerAction action) {

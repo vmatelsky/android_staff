@@ -2,29 +2,27 @@ package com.vlabs.androiweartest.images;
 
 import android.content.res.Resources;
 
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.events.data.OnAssetLoaded;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.job.AssetAsBitmap;
+import com.vlabs.androiweartest.job.BroadcastMessageJob;
 import com.vlabs.wearcontract.WearMessage;
 import com.vlabs.wearcontract.messages.LoadImageMessage;
-
-import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 
 public class ImageLoader {
 
-    @Inject
-    ConnectionManager mConnectionManager;
+    final JobManager mJobManager;
 
-    @Inject
-    EventBus mEventBus;
+    final EventBus mEventBus;
 
     private final int mWindowHeight;
     private final int mWindowWidth;
 
-    public ImageLoader(final ConnectionManager connectionManager, final EventBus eventBus) {
-        mConnectionManager = connectionManager;
+    public ImageLoader(final JobManager jobManager, final EventBus eventBus) {
+        mJobManager = jobManager;
         mEventBus = eventBus;
         mEventBus.register(this);
 
@@ -34,25 +32,12 @@ public class ImageLoader {
     }
 
     public void imageByPath(final String imagePath) {
-        if (mConnectionManager.isConnected()) {
-            mConnectionManager.getDataItems(imagePath, (path, map) -> {
-                requestImageToBeLoaded(path);
-            });
-        } else {
-            mConnectionManager.onConnected().subscribe(aVoid -> {
-                mConnectionManager.getDataItems(imagePath, (path, map) -> {
-                    requestImageToBeLoaded(path);
-                });
-            });
-        }
-    }
-
-    public void requestImageToBeLoaded(final String imagePath) {
-        mConnectionManager.broadcastMessage(WearMessage.LOAD_IMAGE, new LoadImageMessage(imagePath, mWindowHeight, mWindowWidth).asDataMap());
+        mJobManager.addJobInBackground(new BroadcastMessageJob(WearMessage.LOAD_IMAGE, new LoadImageMessage(imagePath, mWindowHeight, mWindowWidth).asDataMap().toBundle()));
     }
 
     @SuppressWarnings("unused")
     public void onEventBackgroundThread(OnAssetLoaded event) {
-        mConnectionManager.getAssetAsBitmap(event.path(), event.asset());
+        mJobManager.addJobInBackground(new AssetAsBitmap(event.path(), event.asset()));
     }
+
 }

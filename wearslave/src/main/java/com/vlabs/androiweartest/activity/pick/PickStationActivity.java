@@ -8,13 +8,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.pick.adapters.AdapterFactory;
 import com.vlabs.androiweartest.activity.pick.adapters.ClickableAdapter;
+import com.vlabs.androiweartest.events.data.OnDataReceived;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.job.GetDataItems;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearExtras;
@@ -27,6 +29,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 
 public class PickStationActivity extends BaseActivity {
+
 
     private enum ListType {
         FOR_YOU,
@@ -44,7 +47,7 @@ public class PickStationActivity extends BaseActivity {
     Analytics mAnalytics;
 
     @Inject
-    ConnectionManager mConnectionManager;
+    JobManager mJobManager;
 
     @Inject
     EventBus mEventBus;
@@ -164,8 +167,17 @@ public class PickStationActivity extends BaseActivity {
         }
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnDataReceived event) {
+        if (isFinishing()) return;
+
+        if (event.path().equals(stationsListPath())) {
+            onEventMainThread(OnStations.fromDataMap(event.dataMap(), event.path()));
+        }
+    }
+
     public void refresh() {
-        mConnectionManager.getDataItems(stationsListPath(), (path, map) -> onEventMainThread(OnStations.fromDataMap(map, path)));
+        mJobManager.addJobInBackground(new GetDataItems(stationsListPath()));
     }
 
 }

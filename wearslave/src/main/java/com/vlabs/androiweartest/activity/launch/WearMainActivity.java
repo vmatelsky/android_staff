@@ -8,7 +8,6 @@ import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
-import com.vlabs.androiweartest.manager.ConnectionManager;
 
 import javax.inject.Inject;
 
@@ -18,9 +17,6 @@ public class WearMainActivity extends BaseActivity {
 
     @Inject
     EventBus eventBus;
-
-    @Inject
-    ConnectionManager connectionManager;
 
     @Inject
     ChangeBackgroundBehavior mBackgroundBehavior;

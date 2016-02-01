@@ -2,13 +2,15 @@ package com.vlabs.androiweartest.di.module;
 
 import android.content.Context;
 
+import com.path.android.jobqueue.JobManager;
+import com.path.android.jobqueue.config.Configuration;
 import com.vlabs.androiweartest.WearApplication;
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.images.ImageLoader;
 import com.vlabs.androiweartest.images.ImageManager;
-import com.vlabs.androiweartest.manager.ConnectionManager;
-import com.vlabs.androiweartest.manager.ConnectionManagerImpl;
+import com.vlabs.androiweartest.job.base.BaseJob;
+import com.vlabs.androiweartest.job.connectivity.ConnectivityModule;
 import com.vlabs.androiweartest.manager.PlayerManager;
 
 import javax.inject.Singleton;
@@ -24,13 +26,31 @@ public class ApplicationModule {
     private final ImageManager mImageManager;
     private final PlayerManager mPlayerManager;
     private final ChangeBackgroundBehavior mBackgroundBehavior;
+    private ConnectivityModule mConnectivityModule;
+    private JobManager mJobManager;
 
     public ApplicationModule(final WearApplication app) {
         mApp = app;
-        final ImageLoader imageLoader = new ImageLoader(connectionManager(), mEventBus);
+        mConnectivityModule = new ConnectivityModule(mApp);
+        mJobManager = new JobManager(mApp, jobManagerConfiguration());
+
+        final ImageLoader imageLoader = new ImageLoader(mJobManager, mEventBus);
         mImageManager = new ImageManager(imageLoader, mEventBus);
-        mPlayerManager = new PlayerManager(connectionManager(), mEventBus);
-        mBackgroundBehavior = new ChangeBackgroundBehavior(app, mEventBus, connectionManager());
+        mPlayerManager = new PlayerManager(mJobManager, mEventBus);
+        mBackgroundBehavior = new ChangeBackgroundBehavior(app, mEventBus, mJobManager);
+    }
+
+    private Configuration jobManagerConfiguration() {
+        return new Configuration.Builder(mApp)
+                    .maxConsumerCount(3)
+                    .minConsumerCount(1)
+                    .networkUtil(mConnectivityModule)
+                    .injector(job -> {
+                        if (job instanceof BaseJob) {
+                            ((BaseJob) job).inject(mApp.appComponent());
+                        }
+                    })
+                    .build();
     }
 
     @Provides
@@ -47,14 +67,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public ConnectionManager connectionManager() {
-        return new ConnectionManagerImpl(mApp, eventBus());
-    }
-
-    @Provides
-    @Singleton
     public Analytics analytics() {
-        return new Analytics(connectionManager());
+        return new Analytics(mJobManager);
     }
 
     @Provides
@@ -73,6 +87,18 @@ public class ApplicationModule {
     @Singleton
     public ChangeBackgroundBehavior backgroundBehavior() {
         return mBackgroundBehavior;
+    }
+
+    @Provides
+    @Singleton
+    public ConnectivityModule connectivityModule() {
+        return mConnectivityModule;
+    }
+
+    @Provides
+    @Singleton
+    public JobManager jobManager() {
+        return mJobManager;
     }
 
 }

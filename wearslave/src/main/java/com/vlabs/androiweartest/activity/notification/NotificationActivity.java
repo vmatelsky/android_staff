@@ -8,13 +8,15 @@ import android.widget.FrameLayout;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.google.android.gms.wearable.DataMap;
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.notification.scenes.IsPausedSceneController;
 import com.vlabs.androiweartest.activity.notification.scenes.IsPlayingSceneController;
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
+import com.vlabs.androiweartest.events.data.OnDataReceived;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.job.GetDataItems;
 import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
@@ -39,10 +41,10 @@ public class NotificationActivity extends BaseActivity {
     Analytics mAnalytics;
 
     @Inject
-    ConnectionManager mConnectionManager;
+    EventBus eventBus;
 
     @Inject
-    EventBus eventBus;
+    JobManager mJobManager;
 
     private FrameLayout mContentRoot;
 
@@ -89,6 +91,33 @@ public class NotificationActivity extends BaseActivity {
         processPlayerState(event.asPlayerState());
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnDataReceived event) {
+        if (isFinishing()) return;
+
+        if (WearDataEvent.PATH_STATIONS_RECENT.equals(event.path())) {
+            if (playerManager.isPlaying()) return;
+
+            if (event.dataMap() == null) return;
+
+            final ArrayList<DataMap> stationMapLists = event.dataMap().getDataMapArrayList(WearDataEvent.KEY_STATIONS);
+
+            final Scene isPausedScene = Scene.getSceneForLayout(mContentRoot, R.layout.is_paused_scene, this);
+            final IsPausedSceneController controller = new IsPausedSceneController(mAnalytics, playerManager);
+
+            final WearStation wearStation;
+
+            if (stationMapLists.isEmpty()) {
+                wearStation = null;
+            } else {
+                wearStation = WearStation.fromDataMap(stationMapLists.get(0));
+            }
+
+            isPausedScene.setEnterAction(() -> controller.onEnter(isPausedScene, wearStation));
+            TransitionManager.go(isPausedScene, new Fade());
+        }
+    }
+
     private void processPlayerState(final WearPlayerState playerState) {
         if (playerState.isPlaying()) {
             switchToIsPlayingController(playerState);
@@ -106,27 +135,7 @@ public class NotificationActivity extends BaseActivity {
     }
 
     private void switchToIsPausedController() {
-        mConnectionManager.getDataItems(WearDataEvent.PATH_STATIONS_RECENT, (path, map) -> {
-            if (playerManager.isPlaying()) return;
-
-            if (map == null) return;
-
-            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
-
-            final Scene isPausedScene = Scene.getSceneForLayout(mContentRoot, R.layout.is_paused_scene, this);
-            final IsPausedSceneController controller = new IsPausedSceneController(mAnalytics, playerManager);
-
-            final WearStation wearStation;
-
-            if (stationMapLists.isEmpty()) {
-                wearStation = null;
-            } else {
-                wearStation = WearStation.fromDataMap(stationMapLists.get(0));
-            }
-
-            isPausedScene.setEnterAction(() -> controller.onEnter(isPausedScene, wearStation));
-            TransitionManager.go(isPausedScene, new Fade());
-        });
+        mJobManager.addJobInBackground(new GetDataItems(WearDataEvent.PATH_STATIONS_RECENT));
     }
 
 }

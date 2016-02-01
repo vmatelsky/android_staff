@@ -14,7 +14,6 @@ import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.manager.ConnectionManager;
 import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearExtras;
@@ -30,9 +29,6 @@ public class PlayStationActivity extends BaseActivity  {
 
     @Inject
     PlayerManager mPlayerManager;
-
-    @Inject
-    ConnectionManager mConnectionManager;
 
     @Inject
     Analytics mAnalytics;

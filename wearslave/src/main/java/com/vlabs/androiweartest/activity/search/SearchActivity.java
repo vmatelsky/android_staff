@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.events.data.OnStations;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.job.BroadcastMessageJob;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearExtras;
@@ -29,7 +30,7 @@ public class SearchActivity extends BaseActivity {
     Analytics mAnalytics;
 
     @Inject
-    ConnectionManager mConnectionManager;
+    JobManager mJobManager;
 
     @Inject
     EventBus mEventBus;
@@ -71,9 +72,7 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void searchFor(final String term) {
-        mConnectionManager.broadcastMessage(
-                WearMessage.SEARCH,
-                new SearchMessage(term).asDataMap());
+        mJobManager.addJobInBackground(new BroadcastMessageJob(WearMessage.SEARCH, new SearchMessage(term).asDataMap().toBundle()));
     }
 
     private boolean wasLaunchedWithQuery() {

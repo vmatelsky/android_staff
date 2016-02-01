@@ -2,6 +2,8 @@ package com.vlabs.androiweartest.manager;
 
 import android.util.Log;
 
+import com.path.android.jobqueue.JobManager;
+import com.vlabs.androiweartest.job.BroadcastMessageJob;
 import com.vlabs.wearcontract.helpers.WearAnalyticsConstants;
 import com.vlabs.wearcontract.PlayStationData;
 import com.vlabs.wearcontract.WearMessage;
@@ -16,12 +18,12 @@ public class PlayerManager {
 
     private static final String TAG = PlayerManager.class.getSimpleName();
 
-    private final ConnectionManager mConnectionManager;
+    private final JobManager mJobManager;
 
     public PlayerManager(
-            final ConnectionManager connectionManager,
+            final JobManager jobManager,
             final EventBus eventBus) {
-        mConnectionManager = connectionManager;
+        mJobManager = jobManager;
         eventBus.register(this);
     }
 
@@ -29,7 +31,7 @@ public class PlayerManager {
 
     public void playStation(final WearStation station, final WearAnalyticsConstants.WearPlayedFrom playedFrom) {
         Log.d(TAG, "Sending control message to play station: " + station);
-        mConnectionManager.broadcastMessage(WearMessage.PLAY_STATION, new PlayStationData(station, playedFrom).toMap());
+        mJobManager.addJobInBackground(new BroadcastMessageJob(WearMessage.PLAY_STATION, new PlayStationData(station, playedFrom).toMap().toBundle()));
     }
 
     public void play() {
@@ -50,7 +52,7 @@ public class PlayerManager {
 
     public void sendControlCommand(final ControlMessage.ControlAction command) {
         Log.d(TAG, "Sending control message: " + command);
-        mConnectionManager.broadcastMessage(WearMessage.CONTROL, new ControlMessage(command).asDataMap());
+        mJobManager.addJobInBackground(new BroadcastMessageJob(WearMessage.CONTROL, new ControlMessage(command).asDataMap().toBundle()));
     }
 
     @SuppressWarnings("unused")

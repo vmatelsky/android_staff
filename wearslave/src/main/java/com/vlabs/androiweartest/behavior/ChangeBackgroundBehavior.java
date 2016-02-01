@@ -6,8 +6,10 @@ import android.support.v4.content.ContextCompat;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.google.android.gms.wearable.DataMap;
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.R;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.events.data.OnDataReceived;
+import com.vlabs.androiweartest.job.GetDataItems;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.WearStation;
@@ -20,7 +22,7 @@ import de.greenrobot.event.EventBus;
 public class ChangeBackgroundBehavior {
 
     private final Context mContext;
-    private final ConnectionManager mConnectionManager;
+    private final JobManager mJobManager;
 
     private final ArrayList<ImageByDataPathView> mActiveImages = new ArrayList<>();
 
@@ -30,9 +32,9 @@ public class ChangeBackgroundBehavior {
     public ChangeBackgroundBehavior(
             final Context context,
             final EventBus eventBus,
-            final ConnectionManager connectionManager) {
+            final JobManager jobManager) {
         mContext = context;
-        mConnectionManager = connectionManager;
+        mJobManager = jobManager;
         eventBus.register(this);
     }
 
@@ -42,7 +44,6 @@ public class ChangeBackgroundBehavior {
         if (!mActiveImages.contains(image)) {
             mActiveImages.add(image);
         }
-
     }
 
     public void deactivateFor(final ImageByDataPathView image) {
@@ -70,22 +71,7 @@ public class ChangeBackgroundBehavior {
     }
 
     private void setImageFromRecentStations() {
-        mConnectionManager.getDataItems(WearDataEvent.PATH_STATIONS_RECENT, (path, map) -> {
-
-            if (mLastIsPlayedState) return;
-
-            if (map == null) return;
-
-            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
-
-            if (stationMapLists.isEmpty()) {
-                setDefaultBackgroundColor();
-            } else {
-                final WearStation mostRecentStation = WearStation.fromDataMap(stationMapLists.get(0));
-                updateImagePath(mostRecentStation.getImagePath());
-
-            }
-        });
+        mJobManager.addJobInBackground(new GetDataItems(WearDataEvent.PATH_STATIONS_RECENT));
     }
 
     private void setDefaultBackgroundColor() {
@@ -94,6 +80,24 @@ public class ChangeBackgroundBehavior {
 
         for (ImageByDataPathView image : mActiveImages) {
             image.setBackground(colorDrawable);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnDataReceived event) {
+        if (mLastIsPlayedState) return;
+
+        final DataMap dataMap = event.dataMap();
+        if (dataMap == null) return;
+
+        final ArrayList<DataMap> stationMapLists = dataMap.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
+
+        if (stationMapLists.isEmpty()) {
+            setDefaultBackgroundColor();
+        } else {
+            final WearStation mostRecentStation = WearStation.fromDataMap(stationMapLists.get(0));
+            updateImagePath(mostRecentStation.getImagePath());
+
         }
     }
 }

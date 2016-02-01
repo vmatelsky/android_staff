@@ -8,10 +8,12 @@ import android.support.v4.content.ContextCompat;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.google.android.gms.wearable.DataMap;
+import com.path.android.jobqueue.JobManager;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
 import com.vlabs.androiweartest.activity.launch.WearMainActivity;
-import com.vlabs.androiweartest.manager.ConnectionManager;
+import com.vlabs.androiweartest.events.data.OnDataReceived;
+import com.vlabs.androiweartest.job.GetDataItems;
 import com.vlabs.androiweartest.manager.PlayerManager;
 import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearPlayerState;
@@ -30,7 +32,7 @@ public class ShowMoreActivity extends BaseActivity {
     EventBus mEventBus;
 
     @Inject
-    ConnectionManager mConnectionManager;
+    JobManager mJobManager;
 
     @Inject
     PlayerManager mPlayerManager;
@@ -77,6 +79,27 @@ public class ShowMoreActivity extends BaseActivity {
         processPlayerState(event.asPlayerState());
     }
 
+    @SuppressWarnings("unused")
+    public void onEventMainThread(OnDataReceived event) {
+        if (isFinishing()) return;
+
+        if (WearDataEvent.PATH_STATIONS_RECENT.equals(event.path())) {
+            if (mPlayerManager.isPlaying()) return;
+
+            final DataMap dataMap = event.dataMap();
+            if (dataMap == null) return;
+
+            final ArrayList<DataMap> stationMapLists = dataMap.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
+
+            if (stationMapLists.isEmpty()) {
+                setDefaultBackgroundColor();
+            } else {
+                final WearStation wearStation = WearStation.fromDataMap(stationMapLists.get(0));
+                setBackgroundImagePath(wearStation.getImagePath());
+            }
+        }
+    }
+
     private void processPlayerState(final WearPlayerState playerState) {
         if (playerState.isPlaying()) {
             setBackgroundImagePath(playerState.getImagePath());
@@ -86,20 +109,7 @@ public class ShowMoreActivity extends BaseActivity {
     }
 
     private void switchToIsPausedController() {
-        mConnectionManager.getDataItems(WearDataEvent.PATH_STATIONS_RECENT, (path, map) -> {
-            if (mPlayerManager.isPlaying()) return;
-
-            if (map == null) return;
-
-            final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
-
-            if (stationMapLists.isEmpty()) {
-                setDefaultBackgroundColor();
-            } else {
-                final WearStation wearStation = WearStation.fromDataMap(stationMapLists.get(0));
-                setBackgroundImagePath(wearStation.getImagePath());
-            }
-        });
+        mJobManager.addJobInBackground(new GetDataItems(WearDataEvent.PATH_STATIONS_RECENT));
     }
 
     private void setBackgroundImagePath(final String imagePath) {
