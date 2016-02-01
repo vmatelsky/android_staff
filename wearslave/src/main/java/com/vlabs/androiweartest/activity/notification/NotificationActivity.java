@@ -1,17 +1,17 @@
 package com.vlabs.androiweartest.activity.notification;
 
-import android.animation.ObjectAnimator;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
+import android.transition.Fade;
+import android.transition.Scene;
+import android.transition.TransitionManager;
+import android.widget.FrameLayout;
 
 import com.clearchannel.iheartradio.controller.view.ImageByDataPathView;
 import com.google.android.gms.wearable.DataMap;
 import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.activity.BaseActivity;
-import com.vlabs.androiweartest.activity.notification.state.IsPausedViewController;
-import com.vlabs.androiweartest.activity.notification.state.IsPlayingViewController;
+import com.vlabs.androiweartest.activity.notification.scenes.IsPausedSceneController;
+import com.vlabs.androiweartest.activity.notification.scenes.IsPlayingSceneController;
 import com.vlabs.androiweartest.behavior.ChangeBackgroundBehavior;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.manager.ConnectionManager;
@@ -30,6 +30,8 @@ import de.greenrobot.event.EventBus;
 
 public class NotificationActivity extends BaseActivity {
 
+    public static boolean isNotificationActivityActive = false;
+
     @Inject
     PlayerManager playerManager;
 
@@ -42,10 +44,9 @@ public class NotificationActivity extends BaseActivity {
     @Inject
     EventBus eventBus;
 
+    private FrameLayout mContentRoot;
+
     private ImageByDataPathView mBackground;
-    private View backgroundTint;
-    private IsPlayingViewController mIsPlayingController;
-    private IsPausedViewController mIsPausedController;
 
     @Inject
     ChangeBackgroundBehavior mBackgroundBehavior;
@@ -58,24 +59,14 @@ public class NotificationActivity extends BaseActivity {
         getComponent().inject(this);
 
         mBackground = (ImageByDataPathView) findViewById(R.id.background);
-        backgroundTint = findViewById(R.id.background_tint);
-
-        mIsPlayingController = new IsPlayingViewController(
-                findViewById(R.id.is_playing_content),
-                mAnalytics,
-                playerManager
-        );
-
-        mIsPausedController = new IsPausedViewController(
-                findViewById(R.id.is_paused_content),
-                mAnalytics,
-                playerManager
-        );
+        mContentRoot = (FrameLayout) findViewById(R.id.content_root);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        isNotificationActivityActive = true;
+
         eventBus.register(this);
         mBackgroundBehavior.activateFor(mBackground);
         processPlayerState(playerManager.currentState());
@@ -85,6 +76,8 @@ public class NotificationActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        isNotificationActivityActive = false;
+
         eventBus.unregister(this);
         mBackgroundBehavior.deactivateFor(mBackground);
     }
@@ -105,17 +98,14 @@ public class NotificationActivity extends BaseActivity {
     }
 
     private void switchToIsPlayingController(final WearPlayerState state) {
-        fadeIn(backgroundTint);
+        final Scene isPlayingScene = Scene.getSceneForLayout(mContentRoot, R.layout.is_playing_scene, this);
+        final IsPlayingSceneController controller = new IsPlayingSceneController(mAnalytics, playerManager);
 
-        mIsPlayingController.show(state);
-        mIsPausedController.hide();
+        isPlayingScene.setEnterAction(() -> controller.onEnter(isPlayingScene, state));
+        TransitionManager.go(isPlayingScene, new Fade());
     }
 
     private void switchToIsPausedController() {
-        fadeOut(backgroundTint);
-
-        mIsPlayingController.hide();
-
         mConnectionManager.getDataItems(WearDataEvent.PATH_STATIONS_RECENT, (path, map) -> {
             if (playerManager.isPlaying()) return;
 
@@ -123,28 +113,20 @@ public class NotificationActivity extends BaseActivity {
 
             final ArrayList<DataMap> stationMapLists = map.getDataMapArrayList(WearDataEvent.KEY_STATIONS);
 
+            final Scene isPausedScene = Scene.getSceneForLayout(mContentRoot, R.layout.is_paused_scene, this);
+            final IsPausedSceneController controller = new IsPausedSceneController(mAnalytics, playerManager);
+
+            final WearStation wearStation;
+
             if (stationMapLists.isEmpty()) {
-                setDefaultBackgroundColor();
-                mIsPausedController.show(null);
+                wearStation = null;
             } else {
-                final WearStation wearStation = WearStation.fromDataMap(stationMapLists.get(0));
-                mIsPausedController.show(wearStation);
+                wearStation = WearStation.fromDataMap(stationMapLists.get(0));
             }
+
+            isPausedScene.setEnterAction(() -> controller.onEnter(isPausedScene, wearStation));
+            TransitionManager.go(isPausedScene, new Fade());
         });
-    }
-
-    private void fadeOut(View hidden) {
-        ObjectAnimator.ofFloat(hidden, View.ALPHA, hidden.getAlpha(), 0.0f).start();
-    }
-
-    private void fadeIn(View visible) {
-        ObjectAnimator.ofFloat(visible, View.ALPHA, visible.getAlpha(), 1.0f).start();
-    }
-
-    private void setDefaultBackgroundColor() {
-        final int color = ContextCompat.getColor(this, R.color.notification_background);
-        final ColorDrawable colorDrawable = new ColorDrawable(color);
-        mBackground.setImageDrawable(colorDrawable);
     }
 
 }

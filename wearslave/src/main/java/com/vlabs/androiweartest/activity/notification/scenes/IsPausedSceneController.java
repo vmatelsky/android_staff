@@ -1,6 +1,7 @@
-package com.vlabs.androiweartest.activity.notification.state;
+package com.vlabs.androiweartest.activity.notification.scenes;
 
 import android.support.annotation.Nullable;
+import android.transition.Scene;
 import android.view.View;
 import android.widget.TextView;
 
@@ -8,44 +9,38 @@ import com.vlabs.androiweartest.R;
 import com.vlabs.androiweartest.helpers.PlayedFromUtils;
 import com.vlabs.androiweartest.helpers.analytics.Analytics;
 import com.vlabs.androiweartest.manager.PlayerManager;
-import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearAnalyticsConstants;
+import com.vlabs.wearcontract.WearDataEvent;
 import com.vlabs.wearcontract.WearStation;
 
-public class IsPausedViewController implements View.OnClickListener {
+public class IsPausedSceneController implements View.OnClickListener {
 
-    private final View mView;
-    private final TextView mTitleView;
-    private final Analytics mAnalytics;
     private final PlayerManager mPlayerManager;
+    private final Analytics mAnalytics;
 
+    private TextView mTitleView;
     private WearStation mStation;
 
-    public IsPausedViewController(final View view, final Analytics analytics, final PlayerManager playerManager) {
-        mView = view;
+    public IsPausedSceneController(final Analytics analytics, final PlayerManager playerManager) {
+        mPlayerManager = playerManager;
+        mAnalytics = analytics;
+    }
+
+    public void onEnter(final Scene scene, @Nullable final WearStation station) {
+        final View view = scene.getSceneRoot();
         final TextView stationButton = (TextView) view.findViewById(R.id.station_name_button);
+
+        mStation = station;
         mTitleView = (TextView) view.findViewById(R.id.title);
         stationButton.setOnClickListener(this);
 
-        mAnalytics = analytics;
-        mPlayerManager = playerManager;
-    }
 
-    public void show(@Nullable final WearStation station) {
-        mView.setVisibility(View.VISIBLE);
-
-        mStation = station;
         if (station == null) {
             mTitleView.setText("");
         } else {
             mTitleView.setText(station.name());
         }
     }
-
-    public void hide() {
-        mView.setVisibility(View.GONE);
-    }
-
 
     @Override
     public void onClick(final View v) {

@@ -1,5 +1,6 @@
-package com.vlabs.androiweartest.activity.notification.state;
+package com.vlabs.androiweartest.activity.notification.scenes;
 
+import android.transition.Scene;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -10,21 +11,23 @@ import com.vlabs.wearcontract.WearAnalyticsConstants;
 import com.vlabs.wearcontract.WearPlayerState;
 import com.vlabs.wearcontract.messages.ControlMessage;
 
-public class IsPlayingViewController implements View.OnClickListener {
+public class IsPlayingSceneController implements View.OnClickListener {
 
     private final PlayerManager mPlayerManager;
     private final Analytics mAnalytics;
 
-    private final ImageButton mVolumeDownButton;
-    private final ImageButton mVolUpButton;
-    private final ImageButton mThumbUpButton;
-    private final ImageButton mThumbDownButton;
-    private final View mView;
+    private ImageButton mVolumeDownButton;
+    private ImageButton mVolUpButton;
+    private ImageButton mThumbUpButton;
+    private ImageButton mThumbDownButton;
 
-    public IsPlayingViewController(final View view, final Analytics analytics, final PlayerManager playerManager) {
-        mView = view;
+    public IsPlayingSceneController(final Analytics analytics, final PlayerManager playerManager) {
         mPlayerManager = playerManager;
         mAnalytics = analytics;
+    }
+
+    public void onEnter(final Scene scene, final WearPlayerState state) {
+        final View view = scene.getSceneRoot();
 
         mVolUpButton = (ImageButton) view.findViewById(R.id.control_vol_up);
         mVolumeDownButton = (ImageButton) view.findViewById(R.id.control_vol_down);
@@ -34,15 +37,8 @@ public class IsPlayingViewController implements View.OnClickListener {
         mVolumeDownButton.setOnClickListener(this);
         mThumbUpButton.setOnClickListener(this);
         mThumbDownButton.setOnClickListener(this);
-    }
 
-    public void show(final WearPlayerState state) {
-        mView.setVisibility(View.VISIBLE);
         handleIsPlayingState(state);
-    }
-
-    public void hide() {
-        mView.setVisibility(View.GONE);
     }
 
     @Override
